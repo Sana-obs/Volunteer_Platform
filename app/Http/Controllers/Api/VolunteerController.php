@@ -4,47 +4,24 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Volunteer;
-use Illuminate\Http\Request;
+use App\Helpers\ApiResponse;
+use App\Http\Requests\VolunteerRequest;
+use App\Http\Resources\VolunteerResource;
 
 class VolunteerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function store(VolunteerRequest $request)
     {
-        //
-    }
+        $volunteer = Volunteer::create([
+            'user_id' => $request->user()->id,
+            'gender' => $request->gender,
+            'city' => $request->city,
+            'education_level' => $request->education_level,
+            'birth_date' => $request->birth_date,
+            'photo' => $request->photo,
+            'about' => $request->about,
+        ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+       return ApiResponse::getResponse(new VolunteerResource($volunteer), 201, ' profile completed successfully');
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Volunteer $volunteer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Volunteer $volunteer)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Volunteer $volunteer)
-    {
-        //
-    }
-}
+} 
