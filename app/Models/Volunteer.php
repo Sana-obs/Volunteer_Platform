@@ -23,4 +23,9 @@ class Volunteer extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function achievements()
+    {
+        return $this->hasMany(Achievement::class);
+    }
 }

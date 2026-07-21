@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AchievementRequest;
+use App\Helpers\ApiResponse;
 use App\Models\Achievement;
 use Illuminate\Http\Request;
 
@@ -19,9 +21,13 @@ class AchievementController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AchievementRequest $request)
     {
-        //
+        $volunteer = auth()->user()->volunteer;
+
+        $achievement = $volunteer->achievements()->create($request->validated());
+
+        return ApiResponse::getResponse($achievement, 201, 'Achievement added');
     }
 
     /**
