@@ -3,54 +3,79 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AchievementRequest;
-use App\Helpers\ApiResponse;
 use App\Models\Achievement;
+use App\Helpers\ApiResponse;
+use App\Http\Requests\AchievementRequest;
+use App\Http\Resources\AchievementResource;
 use Illuminate\Http\Request;
 
 class AchievementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $achievements = Achievement::with(['volunteer', 'category'])->paginate(10);
+
+        return ApiResponse::getResponse(AchievementResource::collection($achievements), 200, 'Achievements retrieved successfully');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(AchievementRequest $request)
     {
-        $volunteer = auth()->user()->volunteer;
+        $volunteer = $request->user()->volunteer;
 
-        $achievement = $volunteer->achievements()->create($request->validated());
+        if (! $volunteer) {
+            return ApiResponse::getResponse(null, 404, ' profile not found');
+        }
 
-        return ApiResponse::getResponse($achievement, 201, 'Achievement added');
+        $data = $request->validated();
+        $data['volunteer_id'] = $volunteer->id;
+
+        $achievement = Achievement::create($data);
+
+        return ApiResponse::getResponse(new AchievementResource($achievement), 201, 'Achievement added');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Achievement $achievement)
+    public function show(Request $request, $id)
     {
-        //
+        $achievement = Achievement::with(['volunteer', 'category'])->find($id);
+
+        if (! $achievement) {
+            return ApiResponse::getResponse(null, 404, 'Achievement not found');
+        }
+
+        return ApiResponse::getResponse(new AchievementResource($achievement), 200, 'Achievement retrieved ');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Achievement $achievement)
+    public function update(AchievementRequest $request, $id)
     {
-        //
+        $achievement = Achievement::find($id);
+
+        if (! $achievement) {
+            return ApiResponse::getResponse(null, 404, 'Achievement not found');
+        }
+
+        if ($achievement->volunteer_id !== $request->user()->volunteer->id) {
+            return ApiResponse::getResponse(null, 403, 'You are not authorized to update this achievement');
+        }
+
+        $achievement->update($request->validated());
+
+        return ApiResponse::getResponse(new AchievementResource($achievement), 200, 'Achievement updated ');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Achievement $achievement)
+    public function destroy(Request $request, $id)
     {
-        //
+        $achievement = Achievement::find($id);
+
+        if (! $achievement) {
+            return ApiResponse::getResponse(null, 404, 'Achievement not found');
+        }
+
+        if ($achievement->volunteer_id !== $request->user()->volunteer->id) {
+            return ApiResponse::getResponse(null, 403, 'You are not authorized to delete this achievement');
+        }
+
+        $achievement->delete();
+
+        return ApiResponse::getResponse(null, 200, 'Achievement deleted ');
     }
 }

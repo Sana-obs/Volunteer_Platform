@@ -15,26 +15,21 @@ class VolunteerController extends Controller
     {
         $volunteers = Volunteer::all();
 
-        return ApiResponse::getResponse(VolunteerResource::collection($volunteers), 200, 'Volunteers retrieved successfully');
+        return ApiResponse::getResponse(VolunteerResource::collection($volunteers), 200, ' retrieved successfully');
     }
 
     public function store(VolunteerRequest $request)
     {
         if (Volunteer::where('user_id', $request->user()->id)->exists()) {
-            return ApiResponse::getResponse(null, 409, 'Volunteer profile already exists');
+            return ApiResponse::getResponse(null, 409, ' profile already exists');
         }
 
-        $volunteer = Volunteer::create([
-            'user_id' => $request->user()->id,
-            'gender' => $request->gender,
-            'city' => $request->city,
-            'education_level' => $request->education_level,
-            'birth_date' => $request->birth_date,
-            'photo' => $request->photo,
-            'about' => $request->about,
-        ]);
+        $data = $request->validated();
+        $data['user_id'] = $request->user()->id;
 
-        return ApiResponse::getResponse(new VolunteerResource($volunteer), 201, 'Profile completed successfully');
+        $volunteer = Volunteer::create($data);
+
+        return ApiResponse::getResponse(new VolunteerResource($volunteer), 201, 'Profile completed');
     }
 
     public function show(Request $request)
@@ -42,10 +37,10 @@ class VolunteerController extends Controller
         $volunteer = $request->user()->volunteer;
 
         if (! $volunteer) {
-            return ApiResponse::getResponse(null, 404, 'Volunteer profile not found');
+            return ApiResponse::getResponse(null, 404, ' profile not found');
         }
 
-        return ApiResponse::getResponse(new VolunteerResource($volunteer), 200, 'Volunteer profile retrieved successfully');
+        return ApiResponse::getResponse(new VolunteerResource($volunteer), 200, ' profile retrieved ');
     }
 
     public function update(VolunteerRequest $request)
@@ -53,19 +48,12 @@ class VolunteerController extends Controller
         $volunteer = $request->user()->volunteer;
 
         if (! $volunteer) {
-            return ApiResponse::getResponse(null, 404, 'Volunteer profile not found');
+            return ApiResponse::getResponse(null, 404, ' profile not found');
         }
 
-        $volunteer->update([
-            'gender' => $request->gender,
-            'city' => $request->city,
-            'education_level' => $request->education_level,
-            'birth_date' => $request->birth_date,
-            'photo' => $request->photo,
-            'about' => $request->about,
-        ]);
+        $volunteer->update($request->validated());
 
-        return ApiResponse::getResponse(new VolunteerResource($volunteer), 200, 'Volunteer profile updated successfully');
+        return ApiResponse::getResponse(new VolunteerResource($volunteer), 200, ' profile updated ');
     }
 
     public function destroy(Request $request)
@@ -73,11 +61,11 @@ class VolunteerController extends Controller
         $volunteer = $request->user()->volunteer;
 
         if (! $volunteer) {
-            return ApiResponse::getResponse(null, 404, 'Volunteer profile not found');
+            return ApiResponse::getResponse(null, 404, ' profile not found');
         }
 
         $volunteer->delete();
 
-        return ApiResponse::getResponse(null, 200, 'Volunteer profile deleted successfully');
+        return ApiResponse::getResponse(null, 200, ' profile deleted');
     }
 }
