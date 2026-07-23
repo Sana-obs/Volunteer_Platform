@@ -13,7 +13,7 @@ class OpportunityController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**

@@ -4,46 +4,53 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\UserResource;
+use App\Helpers\ApiResponse;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function register(RegisterRequest $request)
     {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'password' => Hash::make($request->password),
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        $token = $user->createToken('auth_token')->plainTextToken;
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        return ApiResponse::getResponse([
+            'user' => new UserResource ($user),
+            'token' => $token,
+        ], 201, 'Created successful');
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function login(LoginRequest $request)
     {
-        //
+
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return ApiResponse::getResponse(null,401,'Invalid login ');
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return ApiResponse::getResponse([
+            'user' =>new UserResource ($user),
+            'token' => $token,
+        ],200,'Login successful');
+    }
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return ApiResponse::getResponse(null, 200, 'Logged out successfully');
     }
 }
