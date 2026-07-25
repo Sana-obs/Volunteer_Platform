@@ -18,8 +18,8 @@ class DemoController extends Controller
         $nb = new NaiveBayesService();
         $nb->loadModel(storage_path('app/model.json'));
 
-        $results = $nb->predictTopN($text, 3);
+        $result = $nb->predict($text);
 
-        return view('demo', compact('results', 'text'));
+        return view('demo', compact('result', 'text'));
     }
 }

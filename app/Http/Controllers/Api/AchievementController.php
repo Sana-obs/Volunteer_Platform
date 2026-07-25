@@ -1,50 +1,53 @@
 <?php
+// app/Http/Controllers/Api/AchievementController.php
 
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AchievementResource;
 use App\Models\Achievement;
+use App\Models\Volunteer;
 use Illuminate\Http\Request;
 
 class AchievementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // GET /api/volunteers/{id}/achievements
+    public function forVolunteer(Volunteer $volunteer)
     {
-        //
+        return $this->buildResponse($volunteer);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // GET /api/volunteers/me/achievements
+    public function forMe(Request $request)
     {
-        //
+        // بيفترض إنو المستخدم المسجل مرتبط بسجل volunteer (عدّلي حسب علاقتكن الفعلية)
+        $volunteer = $request->user()->volunteer ?? abort(404, 'Volunteer profile not found');
+
+        return $this->buildResponse($volunteer);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Achievement $achievement)
-    {
-        //
-    }
+    // private function buildResponse(Volunteer $volunteer)
+    // {
+    //     // نجيب كل الكتالوج، مع الـ pivot الخاص فيها المتطوع (إذا موجود) لكل وحدة
+    //     $pivots = $volunteer->volunteerAchievements()->get()->keyBy('achievement_id');
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Achievement $achievement)
-    {
-        //
-    }
+    //     $achievements = Achievement::all()->map(function ($achievement) use ($pivots) {
+    //         $achievement->volunteerPivot = $pivots->get($achievement->id);
+    //         return $achievement;
+    //     });
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Achievement $achievement)
-    {
-        //
-    }
+    //     return AchievementResource::collection($achievements);
+    // }
+    private function buildResponse(Volunteer $volunteer)
+{
+    // نربط الـ pivot بـ achievement_id الموجود بجدول الربط مع id الإنجاز
+    $pivots = $volunteer->volunteerAchievements()->get()->keyBy('achievement_id');
+
+    $achievements = Achievement::all()->map(function ($achievement) use ($pivots) {
+        $achievement->volunteerPivot = $pivots->get($achievement->id);
+        return $achievement;
+    });
+
+    return AchievementResource::collection($achievements);
+}
 }
