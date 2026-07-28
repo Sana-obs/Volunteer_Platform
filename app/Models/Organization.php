@@ -14,6 +14,7 @@ class Organization extends Model implements HasMedia
         'name',
         'city',
         'description',
+        'contact_person',
         'website',
         'user_id',
     ];

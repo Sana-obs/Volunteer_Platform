@@ -18,9 +18,10 @@ return new class extends Migration
                 ->unique()
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->string('city');
-            $table->string('description');
-            $table->string('website');
+            $table->string('city')->nullable();
+            $table->string('description')->nullable();
+            $table->string('website')->nullable();
+            $table->string('contact_person');
             $table->timestamps();
         });
     }

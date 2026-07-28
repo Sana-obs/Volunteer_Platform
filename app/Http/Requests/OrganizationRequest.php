@@ -34,6 +34,7 @@ class OrganizationRequest extends FormRequest
             'description'=>'required|string|min:20|max:3000',
             'city'=>'required|string|min:3|max:500',
             'website'=>'nullable|url:https,http|max:255',
+            'contact_person' => 'required|string|max:255',
         ];
     }
 }

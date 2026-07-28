@@ -17,55 +17,46 @@ use App\Http\Controllers\Api\OrganizationController;
 class UserController extends Controller
 {
     public function register(RegisterRequest $request)
-    {
-        $user = DB::transaction(function () use ($request) {
+{
+    $user = DB::transaction(function () use ($request) {
 
-            $user = User::create([
-                'first_name' => $request->account_type === 'volunteer' ? $request->first_name : null,
-                'last_name' => $request->account_type === 'volunteer' ? $request->last_name : null,
-                'organization_name' => $request->account_type === 'organization' ? $request->organization_name : null,
-                'email' => $request->email,
-                'phone_number' => $request->phone_number,
-                'password' => Hash::make($request->password),
-            ]);
+        $user = User::create([
+            'first_name' => $request->account_type === 'volunteer' ? $request->first_name : null,
+            'last_name' => $request->account_type === 'volunteer' ? $request->last_name : null,
+            'organization_name' => $request->account_type === 'organization' ? $request->organization_name : null,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'password' => Hash::make($request->password),
+        ]);
 
-            $user->assignRole($request->account_type);
+        $user->assignRole($request->account_type);
 
-            if ($request->account_type === 'volunteer') {
-                $data = [
-                    'gendre' => $request->gendre,
-                    'city' => $request->city,
-                    'education_level' => $request->education_level,
-                    'birth_date' => $request->birth_date,
-                    'about' => $request->about,
-                ];
-                app(VolunteerController::class)->createVolunteerProfile($user, $data, $request);
-            }
+        if ($request->account_type === 'volunteer') {
+            app(VolunteerController::class)->createVolunteerProfile($user, [], $request);
+        }
 
-            if ($request->account_type === 'organization') {
-                $data = [
-                    'name' => $request->organization_name,
-                    'description' => $request->description,
-                    'city' => $request->city,
-                    'website' => $request->website,
-                ];
-                app(OrganizationController::class)->createOrganizationProfile($user, $data, $request);
-            }
+        if ($request->account_type === 'organization') {
+            $data = [
+                'name' => $request->organization_name,
+                'contact_person' => $request->contact_person,
+            ];
+            app(OrganizationController::class)->createOrganizationProfile($user, $data, $request);
+        }
 
-            return $user;
-        });
+        return $user;
+    });
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+    $token = $user->createToken('auth_token')->plainTextToken;
 
-        $message = $user->hasRole('organization')
-            ? 'Your request is under review. We will notify you once approved.'
-            : 'Account created successfully';
+    $message = $user->hasRole('organization')
+        ? 'Your request is under review. We will notify you once approved.'
+        : 'Account created successfully';
 
-        return ApiResponse::getResponse([
-            'user' => new UserResource($user),
-            'token' => $token,
-        ], 201, $message);
-    }
+    return ApiResponse::getResponse([
+        'user' => new UserResource($user),
+        'token' => $token,
+    ], 201, $message);
+}
 
     public function login(LoginRequest $request)
     {

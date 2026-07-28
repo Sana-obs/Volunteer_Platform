@@ -23,21 +23,12 @@ class RegisterRequest extends FormRequest
         if ($this->account_type === 'volunteer') {
             $rules['first_name'] = 'required|string|max:255';
             $rules['last_name'] = 'required|string|max:255';
-            $rules['gendre'] = 'required|string|in:male,female';
-            $rules['city'] = 'required|string';
-            $rules['education_level'] = 'required|string';
-            $rules['birth_date'] = 'required|date|before_or_equal:' . now()->subYears(18)->toDateString();
-            $rules['about'] = 'nullable|string';
-            $rules['photo'] = 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048';
         }
 
         if ($this->account_type === 'organization') {
             $rules['organization_name'] = 'required|string|min:3|max:255|unique:organizations,name';
-            $rules['description'] = 'required|string|min:20|max:3000';
-            $rules['city'] = 'required|string|min:3|max:500';
-            $rules['website'] = 'nullable|url:https,http|max:255';
+            $rules['contact_person'] = 'required|string|max:255';
             $rules['verification_document'] = 'required|file|mimes:pdf,jpg,png|max:5120';
-            $rules['photo'] = 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048';
         }
 
         return $rules;

@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('volunteers', function (Blueprint $table) {
             $table->id();
-            $table->string('gendre');
-            $table->string('city');
-            $table->date('birth_date');
-            $table->string('education_level');
-            $table->string('about');
+            $table->string('gendre')->nullable();
+            $table->string('city')->nullable();
+            $table->string('education_level')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->text('about')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
