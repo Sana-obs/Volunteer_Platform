@@ -28,7 +28,7 @@ class UserController extends Controller
             'phone_number' => $request->phone_number,
             'password' => Hash::make($request->password),
         ]);
-
+        $user->load(['volunteer', 'organization']);
         $user->assignRole($request->account_type);
 
         if ($request->account_type === 'volunteer') {
@@ -65,7 +65,7 @@ class UserController extends Controller
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return ApiResponse::getResponse(null, 401, 'Invalid login ');
         }
-
+        $user->load(['volunteer', 'organization']);
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return ApiResponse::getResponse([

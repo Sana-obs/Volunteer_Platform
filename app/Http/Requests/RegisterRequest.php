@@ -16,7 +16,7 @@ class RegisterRequest extends FormRequest
         $rules = [
             'account_type' => 'required|in:volunteer,organization',
             'email' => 'required|email|unique:users,email',
-            'phone_number' => 'nullable|string|max:20',
+            'phone_number' => 'required|string|max:20',
             'password' => 'required|string|min:8|confirmed',
         ];
 
