@@ -6,51 +6,87 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\UserResource;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Controllers\Api\VolunteerController;
+use App\Http\Controllers\Api\OrganizationController;
 
 class UserController extends Controller
 {
     public function register(RegisterRequest $request)
     {
+        $user = DB::transaction(function () use ($request) {
 
-        $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number,
-            'password' => Hash::make($request->password),
-        ]);
+            $user = User::create([
+                'first_name' => $request->account_type === 'volunteer' ? $request->first_name : null,
+                'last_name' => $request->account_type === 'volunteer' ? $request->last_name : null,
+                'organization_name' => $request->account_type === 'organization' ? $request->organization_name : null,
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'password' => Hash::make($request->password),
+            ]);
+
+            $user->assignRole($request->account_type);
+
+            if ($request->account_type === 'volunteer') {
+                $data = [
+                    'gendre' => $request->gendre,
+                    'city' => $request->city,
+                    'education_level' => $request->education_level,
+                    'birth_date' => $request->birth_date,
+                    'about' => $request->about,
+                ];
+                app(VolunteerController::class)->createVolunteerProfile($user, $data, $request);
+            }
+
+            if ($request->account_type === 'organization') {
+                $data = [
+                    'name' => $request->organization_name,
+                    'description' => $request->description,
+                    'city' => $request->city,
+                    'website' => $request->website,
+                ];
+                app(OrganizationController::class)->createOrganizationProfile($user, $data, $request);
+            }
+
+            return $user;
+        });
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $message = $user->hasRole('organization')
+            ? 'Your request is under review. We will notify you once approved.'
+            : 'Account created successfully';
+
         return ApiResponse::getResponse([
-            'user' => new UserResource ($user),
+            'user' => new UserResource($user),
             'token' => $token,
-        ], 201, 'Created successful');
+        ], 201, $message);
     }
+
     public function login(LoginRequest $request)
     {
-
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            return ApiResponse::getResponse(null,401,'Invalid login ');
+            return ApiResponse::getResponse(null, 401, 'Invalid login ');
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return ApiResponse::getResponse([
-            'user' =>new UserResource ($user),
+            'user' => new UserResource($user),
             'token' => $token,
-        ],200,'Login successful');
+        ], 200, 'Login successful');
     }
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return ApiResponse::getResponse(null, 200, 'Logged out successfully');
+        return ApiResponse::getResponse(null, 200, 'Logged out ');
     }
 }

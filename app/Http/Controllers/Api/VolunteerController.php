@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Volunteer;
+use App\Models\User;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\VolunteerRequest;
 use App\Http\Resources\VolunteerResource;
@@ -24,8 +25,23 @@ class VolunteerController extends Controller
             return ApiResponse::getResponse(null, 409, ' profile already exists');
         }
 
-        $data = $request->validated();
-        $data['user_id'] = $request->user()->id;
+        $volunteer = $this->createVolunteerProfile(
+            $request->user(),
+            $request->validated(),
+            $request
+        );
+        if (! $request->user()->hasRole('volunteer')) {
+            $request->user()->assignRole('volunteer');
+        }
+        return ApiResponse::getResponse(new VolunteerResource($volunteer), 201, 'Profile completed');
+    }
+
+    /**
+     * منطق الإنشاء الفعلي — قابل للاستدعاء من store() أو من UserController::register()
+     */
+    public function createVolunteerProfile(User $user, array $data, Request $request): Volunteer
+    {
+        $data['user_id'] = $user->id;
 
         $volunteer = Volunteer::create($data);
 
@@ -33,7 +49,7 @@ class VolunteerController extends Controller
             $volunteer->addMediaFromRequest('photo')->toMediaCollection('profile_photo');
         }
 
-        return ApiResponse::getResponse(new VolunteerResource($volunteer), 201, 'Profile completed');
+        return $volunteer;
     }
 
     public function show(Request $request)

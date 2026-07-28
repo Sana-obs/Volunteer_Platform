@@ -7,14 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OrganizationRequest;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Organization;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class OrganizationController extends Controller
 {
-    /**
-     * Display a listing of the organizations.
-     */
     public function index()
     {
         $organizations = Organization::with('user')->latest()->paginate(15);
@@ -23,38 +21,51 @@ class OrganizationController extends Controller
             Response::HTTP_OK,
         );
     }
+    public function store(OrganizationRequest $request)
+{
+    if (Organization::where('user_id', $request->user()->id)->exists()) {
+        return ApiResponse::getResponse(null, 409, 'profile already exists');
+    }
+
+    $organization = $this->createOrganizationProfile(
+        $request->user(),
+        $request->validated(),
+        $request
+    );
+
+    if (! $request->user()->hasRole('organization')) {
+        $request->user()->assignRole('organization');
+    }
+
+    return ApiResponse::getResponse(
+        new OrganizationResource($organization),
+        Response::HTTP_CREATED,
+        'Organization created successfully'
+    );
+}
 
     /**
-     * Store a newly created organization.
+     * منطق الإنشاء الفعلي — قابل للاستدعاء من store() أو من UserController::register()
      */
-    public function store(OrganizationRequest $request)
+    public function createOrganizationProfile(User $user, array $data, Request $request): Organization
     {
-        if (Organization::where('user_id', $request->user()->id)->exists()) {
-            return ApiResponse::getResponse(null, 409, ' profile already exists');
-        }
-        $data = $request->validated();
-        $data['user_id'] = $request->user()->id;
+        $data['user_id'] = $user->id;
+        $data['status'] = $data['status'] ?? 'pending';
 
         $organization = Organization::create($data);
 
-        if ($request->hasFile('verification_documents')) {
-            $organization->addMediaFromRequest('verification_documents')
+        if ($request->hasFile('verification_document')) {
+            $organization->addMediaFromRequest('verification_document')
                 ->toMediaCollection('verification_documents');
         }
+
         if ($request->hasFile('photo')) {
             $organization->addMediaFromRequest('photo')->toMediaCollection('profile_image');
         }
 
-        return ApiResponse::getResponse(
-            new OrganizationResource($organization),
-            Response::HTTP_CREATED,
-            'Organization created successfully'
-        );
+        return $organization;
     }
 
-    /**
-     * Display the specified organization.
-     */
     public function show(Organization $organization)
     {
         return ApiResponse::getResponse(
@@ -63,9 +74,6 @@ class OrganizationController extends Controller
         );
     }
 
-    /**
-     * Update the specified organization.
-     */
     public function update(OrganizationRequest $request, Organization $organization)
     {
         $organization->update($request->validated());
@@ -77,9 +85,6 @@ class OrganizationController extends Controller
         );
     }
 
-    /**
-     * Remove the specified organization.
-     */
     public function destroy(Organization $organization)
     {
         $organization->delete();
@@ -90,5 +95,4 @@ class OrganizationController extends Controller
             'Organization deleted successfully'
         );
     }
-
 }
