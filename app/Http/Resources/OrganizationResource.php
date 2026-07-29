@@ -19,6 +19,7 @@ class OrganizationResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'city' => $this->city,
+            'contact_person' => $this->contact_person,
             'website' => $this->website,
             'owner' => [
                 'id' => $this->user->id,
@@ -26,7 +27,8 @@ class OrganizationResource extends JsonResource
                 'email' => $this->user->email,
             ],
             'profile_image' => $this->getFirstMediaUrl('profile_image') ?: null,
-            'verification_document' => $this->getFirstMediaUrl('verification_documents') ? :null
+            'verification_document' => $this->getFirstMediaUrl('verification_documents') ? :null,
+            'status' => $this->status,
             ];
     }
 }

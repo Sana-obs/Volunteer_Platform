@@ -46,6 +46,47 @@ class NaiveBayesService{
             $this->wordCounts[$class][$word]++;
         }
     }
+<<<<<<< HEAD
+=======
+
+    /**0
+     * بترجع كل الفئات مرتبة تنازلياً حسب الـ score (log-probability)
+     * يعني هاي الميثود الأساسية يلي فيها كل منطق الحساب
+     */
+    protected function scoreAllClasses($text)
+    {
+        $words = $this->tokenize($text);
+
+        if (empty($this->classes)) {
+            throw new \Exception("Model not trained");
+        }
+
+        $vocabSize = count($this->vocabulary);
+        $scores = [];
+
+        foreach ($this->classes as $class => $docCount) {
+
+            $scores[$class] = log($docCount / $this->totalDocs);
+
+            $totalWords = array_sum($this->wordCounts[$class]);
+
+            foreach ($words as $word) {
+                if (empty($word)) continue;
+
+                $wordCount = $this->wordCounts[$class][$word] ?? 0;
+
+                $scores[$class] += log($wordCount + 1) - log($totalWords + $vocabSize);
+            }
+        }
+
+        arsort($scores);
+        return $scores;
+    }
+
+    /**
+     * بترجع الفئة الأعلى بس (نفس السلوك القديم) - محفوظة عشان ما نكسر أي كود شغال أصلاً
+     */
+>>>>>>> origin/main
     public function predict($text)
 {
     $words = $this->tokenize($text);
