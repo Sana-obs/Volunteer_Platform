@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\VolunteerController;
 use App\Http\Controllers\Api\OrganizationController;
+use App\Http\Controllers\Api\SkillController;
 
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
@@ -16,6 +17,8 @@ Route::apiResource('categories', CategoryController::class)->only(['index', 'sho
 Route::apiResource('organizations', OrganizationController::class)->only(['index', 'show']);
 
 Route::apiResource('volunteers', VolunteerController::class)->only(['index', 'show']);
+Route::apiResource('skills', SkillController::class)->only(['index', 'show']);
+
 
 // Routes محمية
 Route::middleware('auth:sanctum')->group(function () {
@@ -34,4 +37,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('volunteers', VolunteerController::class)
         ->except(['index', 'show']);
+        Route::apiResource('skills', SkillController::class)->except(['index', 'show']);
+Route::post('/volunteers/me/skills', [VolunteerController::class, 'syncSkills']);
 });

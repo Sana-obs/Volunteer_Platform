@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Volunteer extends Model implements HasMedia
 {
-    use InteractsWithMedia,HasFactory;
+    use InteractsWithMedia, HasFactory;
+
     protected $fillable = [
         'user_id',
         'gendre',
@@ -28,6 +30,12 @@ class Volunteer extends Model implements HasMedia
     {
         return $this->hasMany(Achievement::class);
     }
+
+    public function skills(): BelongsToMany
+    {
+        return $this->belongsToMany(Skill::class, 'skill_volunteer');
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('profile_photo')

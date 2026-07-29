@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use App\Http\Resources\SkillResource;
 class VolunteerResource extends JsonResource
 {
     /**
@@ -28,6 +28,7 @@ class VolunteerResource extends JsonResource
                 'phone_number' => $this->user->phone_number,
             ],
             'photo' => $this->getFirstMedia('profile_photo') ?: null,
+            'skills' => SkillResource::collection($this->whenLoaded('skills')),
         ];
     }
 }

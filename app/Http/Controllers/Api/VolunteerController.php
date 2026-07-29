@@ -54,7 +54,7 @@ class VolunteerController extends Controller
 
     public function show(Request $request)
     {
-        $volunteer = $request->user()->volunteer;
+        $volunteer = $request->user()->volunteer()->with('skills')->first();
 
         if (! $volunteer) {
             return ApiResponse::getResponse(null, 404, ' profile not found');
@@ -93,5 +93,26 @@ class VolunteerController extends Controller
         $volunteer->delete();
 
         return ApiResponse::getResponse(null, 200, ' profile deleted');
+    }
+    public function syncSkills(Request $request)
+    {
+        $volunteer = $request->user()->volunteer;
+
+        if (! $volunteer) {
+            return ApiResponse::getResponse(null, 404, ' profile not found');
+        }
+
+        $validated = $request->validate([
+            'skill_ids'   => ['required', 'array'],
+            'skill_ids.*' => ['exists:skills,id'],
+        ]);
+
+        $volunteer->skills()->sync($validated['skill_ids']);
+
+        return ApiResponse::getResponse(
+            new VolunteerResource($volunteer->load('skills')),
+            200,
+            'Skills updated successfully'
+        );
     }
 }
