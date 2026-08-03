@@ -22,12 +22,15 @@ class VolunteerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'gendre' => 'required|string|in:male,female',
+            'gender' => 'required|string|in:male,female',
             'city' => 'required|string',
             'education_level' => 'required|string',
             'birth_date' => 'required|date|before_or_equal:' . now()->subYears(18)->toDateString(),
             'about' => 'nullable|string',
+            'interest' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'skills' => 'required|array|min:1',
+            'skills.*' => 'exists:skills,id',
         ];
     }
 }

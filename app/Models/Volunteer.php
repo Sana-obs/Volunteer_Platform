@@ -9,14 +9,16 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Volunteer extends Model implements HasMedia
 {
-    use InteractsWithMedia,HasFactory;
+    use InteractsWithMedia, HasFactory;
+
     protected $fillable = [
         'user_id',
-        'gendre',
+        'gender',
         'city',
         'education_level',
         'birth_date',
         'about',
+        'interest',
     ];
 
     public function user()
@@ -28,6 +30,12 @@ class Volunteer extends Model implements HasMedia
     {
         return $this->hasMany(Achievement::class);
     }
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class, 'skill_volunteer');
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('profile_photo')

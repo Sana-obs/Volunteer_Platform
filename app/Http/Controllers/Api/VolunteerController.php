@@ -27,7 +27,12 @@ class VolunteerController extends Controller
         $data = $request->validated();
         $data['user_id'] = $request->user()->id;
 
+        $skills = $data['skills'];
+        unset($data['skills']);
+
         $volunteer = Volunteer::create($data);
+
+        $volunteer->skills()->attach($skills);
 
         if ($request->hasFile('photo')) {
             $volunteer->addMediaFromRequest('photo')->toMediaCollection('profile_photo');
@@ -36,26 +41,25 @@ class VolunteerController extends Controller
         return ApiResponse::getResponse(new VolunteerResource($volunteer), 201, 'Profile completed');
     }
 
-    public function show(Request $request)
+    public function show(Volunteer $volunteer)
     {
-        $volunteer = $request->user()->volunteer;
-
-        if (! $volunteer) {
-            return ApiResponse::getResponse(null, 404, ' profile not found');
-        }
-
         return ApiResponse::getResponse(new VolunteerResource($volunteer), 200, ' profile retrieved ');
     }
 
-    public function update(VolunteerRequest $request)
+    public function update(VolunteerRequest $request, Volunteer $volunteer)
     {
-        $volunteer = $request->user()->volunteer;
-
-        if (! $volunteer) {
-            return ApiResponse::getResponse(null, 404, ' profile not found');
+        if ($volunteer->user_id !== $request->user()->id) {
+            return ApiResponse::getResponse(null, 403, 'You are not authorized to update this profile');
         }
 
-        $volunteer->update($request->validated());
+        $data = $request->validated();
+
+        $skills = $data['skills'];
+        unset($data['skills']);
+
+        $volunteer->update($data);
+
+        $volunteer->skills()->sync($skills);
 
         if ($request->hasFile('photo')) {
             $volunteer->clearMediaCollection('profile_photo');
@@ -65,12 +69,10 @@ class VolunteerController extends Controller
         return ApiResponse::getResponse(new VolunteerResource($volunteer), 200, ' profile updated ');
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request, Volunteer $volunteer)
     {
-        $volunteer = $request->user()->volunteer;
-
-        if (! $volunteer) {
-            return ApiResponse::getResponse(null, 404, ' profile not found');
+        if ($volunteer->user_id !== $request->user()->id) {
+            return ApiResponse::getResponse(null, 403, 'You are not authorized to delete this profile');
         }
 
         $volunteer->clearMediaCollection('profile_photo');
