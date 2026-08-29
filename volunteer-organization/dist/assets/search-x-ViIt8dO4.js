@@ -1,0 +1,1 @@
+import{m as e}from"./mockUserStore-kG7RqRnd.js";var t=e(`loader-circle`,[[`path`,{d:`M21 12a9 9 0 1 1-6.219-8.56`,key:`13zald`}]]),n=e(`search-x`,[[`path`,{d:`m13.5 8.5-5 5`,key:`1cs55j`}],[`path`,{d:`m8.5 8.5 5 5`,key:`a8mexj`}],[`circle`,{cx:`11`,cy:`11`,r:`8`,key:`4ej97u`}],[`path`,{d:`m21 21-4.3-4.3`,key:`1qie3q`}]]);export{t as n,n as t};

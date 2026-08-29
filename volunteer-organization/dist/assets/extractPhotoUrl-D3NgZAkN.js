@@ -1,0 +1,1 @@
+function e(e){return e?typeof e==`string`?e:e.original_url||e.url||``:``}export{e as t};

@@ -1,0 +1,122 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use App\Http\Resources\UserResource;
+use App\Helpers\ApiResponse;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
+use App\Http\Controllers\Api\VolunteerController;
+use App\Http\Controllers\Api\OrganizationController;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Http\Response;
+use Illuminate\Auth\Events\PasswordReset;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\ResetPasswordRequest;
+
+class UserController extends Controller
+{
+    public function register(RegisterRequest $request)
+{
+    $user = DB::transaction(function () use ($request) {
+
+        $user = User::create([
+            'first_name' => $request->account_type === 'volunteer' ? $request->first_name : null,
+            'last_name' => $request->account_type === 'volunteer' ? $request->last_name : null,
+            'organization_name' => $request->account_type === 'organization' ? $request->organization_name : null,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'password' => Hash::make($request->password),
+        ]);
+
+        $user->assignRole($request->account_type);
+
+        if ($request->account_type === 'organization') {
+            $data = [
+                'name'            => $request->organization_name,
+                'contact_person'  => $request->contact_person,
+
+            ];
+            app(OrganizationController::class)->createOrganizationProfile($user, $data, $request);
+        }
+
+
+        $user->load(['volunteer', 'organization']);
+
+        return $user;
+    });
+
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    $message = $user->hasRole('organization')
+        ? 'Your request is under review. We will notify you once approved.'
+        : 'Account created successfully';
+
+    return ApiResponse::getResponse([
+        'user'  => new UserResource($user),
+        'token' => $token,
+    ], 201, $message);
+}
+
+    public function login(LoginRequest $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return ApiResponse::getResponse(null, 401, 'Invalid login ');
+        }
+        $user->load(['volunteer', 'organization']);
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return ApiResponse::getResponse([
+            'user' => new UserResource($user),
+            'token' => $token,
+        ], 200, 'Login successful');
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return ApiResponse::getResponse(null, 200, 'Logged out ');
+    }
+    public function forgotPassword(ForgotPasswordRequest $request)
+    {
+        Password::sendResetLink($request->only('email'));
+
+        return ApiResponse::getResponse(
+            null,
+            200,
+            'If an account with that email exists, a password reset link has been sent.'
+        );
+    }
+
+    /**
+     * POST /reset-password
+     */public function resetPassword(ResetPasswordRequest $request)
+{
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->forceFill(['password' => Hash::make($password)])->save();
+            $user->tokens()->delete();
+            event(new PasswordReset($user));
+        }
+    );
+
+    if ($status !== Password::PASSWORD_RESET) {
+        return response()->json([
+            'status'  => 422,
+            'message' => 'This password reset link is invalid or has expired.',
+            'errors'  => ['token' => ['This password reset link is invalid or has expired.']],
+        ], 422);
+    }
+
+    return ApiResponse::getResponse(null, Response::HTTP_OK, 'Password has been reset successfully.');
+}
+}

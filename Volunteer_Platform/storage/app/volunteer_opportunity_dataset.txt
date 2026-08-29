@@ -1,0 +1,200 @@
+﻿suitable|Aleppo|Event Planning|Aleppo|Event Planning
+not_suitable|Hama|Fundraising|Homs|Translation
+suitable|Idlib|Photography,Translation|Idlib|Photography
+not_suitable|Homs|IT Support,Logistics,Cooking,Graphic Design,Carpentry|Deir ez-Zor|Logistics,Cooking,Graphic Design
+not_suitable|Raqqa|Driving|Raqqa|Fundraising,Carpentry
+not_suitable|Damascus|Counseling|Homs|Counseling
+not_suitable|Idlib|Carpentry,Driving|Idlib|Counseling,Photography
+suitable|Damascus|Legal Aid,Accounting,Fundraising|Damascus|Logistics,Accounting
+not_suitable|Deir ez-Zor|Accounting|Deir ez-Zor|Event Planning
+not_suitable|Hama|Social Media|Tartus|Social Media
+not_suitable|Deir ez-Zor|Graphic Design,Cooking,Carpentry|Deir ez-Zor|Photography,Data Entry,Social Media
+suitable|Raqqa|Public Speaking|Raqqa|Public Speaking
+suitable|Idlib|Graphic Design,Fundraising,Counseling|Idlib|Fundraising,Graphic Design,Counseling
+not_suitable|Daraa|First Aid|Daraa|Social Media
+not_suitable|Damascus|First Aid,Graphic Design|Damascus|Data Entry,Fundraising,Driving,Cooking
+not_suitable|Hama|Legal Aid,Event Planning,Public Speaking|Hama|Fundraising,Nursing,Social Media
+suitable|Homs|Fundraising,Logistics,Construction|Homs|Logistics,Fundraising
+suitable|Hama|Nursing,Event Planning|Hama|Nursing
+not_suitable|Tartus|IT Support,Fundraising|Tartus|Data Entry,Teaching,Construction
+suitable|Lattakia|Fundraising,Accounting|Lattakia|Logistics,Fundraising
+suitable|Damascus|Logistics,Construction,Photography|Damascus|Logistics,Cooking,Construction
+not_suitable|Aleppo|IT Support,Legal Aid,Driving,Nursing|Deir ez-Zor|Legal Aid,IT Support,Driving
+suitable|Deir ez-Zor|Fundraising,Graphic Design,Construction,Carpentry,Nursing|Deir ez-Zor|Graphic Design,Fundraising,Construction
+not_suitable|Deir ez-Zor|Public Speaking|Deir ez-Zor|Teaching,Logistics
+not_suitable|Deir ez-Zor|Fundraising,Nursing,Photography,Translation|Daraa|Photography,Translation,First Aid
+not_suitable|Deir ez-Zor|Photography,Cooking|Deir ez-Zor|Construction
+not_suitable|Lattakia|Social Media|Lattakia|Driving,Teaching,Graphic Design,Social Media
+not_suitable|Aleppo|Photography,Driving,First Aid|Aleppo|Carpentry,Social Media,Event Planning
+suitable|Aleppo|Construction,Accounting,Social Media,IT Support,Photography|Aleppo|Social Media,Accounting,Construction
+not_suitable|Tartus|Data Entry|Tartus|First Aid,Carpentry,Data Entry
+not_suitable|Aleppo|Cooking|Aleppo|Construction,Cooking,Legal Aid
+not_suitable|Damascus|Logistics,Event Planning|Homs|Construction
+not_suitable|Daraa|Carpentry|Daraa|Nursing,First Aid
+suitable|Tartus|IT Support,First Aid,Translation,Event Planning|Tartus|IT Support,Event Planning,First Aid
+suitable|Raqqa|Logistics,Accounting|Raqqa|Logistics
+not_suitable|Idlib|First Aid|Idlib|Construction,Teaching
+suitable|Raqqa|IT Support,First Aid,Photography,Carpentry,Graphic Design|Raqqa|Graphic Design,Photography,IT Support
+suitable|Aleppo|Driving,Legal Aid|Aleppo|Legal Aid,Logistics,Driving
+not_suitable|Raqqa|Carpentry|Hama|Carpentry
+suitable|Homs|Data Entry,Event Planning,IT Support,Cooking|Homs|Data Entry,IT Support
+suitable|Hama|Driving|Hama|Carpentry,Driving
+not_suitable|Aleppo|Counseling,Construction,Accounting,Social Media|Homs|Construction,Counseling
+not_suitable|Lattakia|Data Entry,Accounting|Lattakia|Data Entry,First Aid,Public Speaking
+not_suitable|Damascus|Driving,Construction|Damascus|Logistics,Fundraising
+not_suitable|Damascus|Logistics,Counseling,IT Support|Damascus|Translation,Public Speaking
+not_suitable|Damascus|IT Support,Cooking|Damascus|Legal Aid,Public Speaking,Cooking
+suitable|Tartus|Logistics|Tartus|Logistics,Counseling
+suitable|Lattakia|IT Support,Carpentry|Lattakia|Photography,IT Support
+suitable|Aleppo|Counseling,Cooking,First Aid|Aleppo|Counseling
+not_suitable|Lattakia|Translation,Cooking,Data Entry|Lattakia|Teaching,Data Entry,Legal Aid
+suitable|Idlib|Nursing,Photography,Construction,Social Media|Idlib|Nursing,Photography
+suitable|Deir ez-Zor|Logistics,Driving,First Aid|Deir ez-Zor|First Aid,Logistics,Driving
+not_suitable|Tartus|Accounting|Tartus|Nursing,Logistics,First Aid
+suitable|Daraa|IT Support,Nursing,Social Media,Photography,Data Entry|Daraa|Photography,Social Media,Nursing
+not_suitable|Lattakia|Translation|Lattakia|Construction,Nursing
+not_suitable|Hama|Nursing,Logistics,Translation,Data Entry,Graphic Design|Homs|Nursing,Data Entry,Logistics
+not_suitable|Aleppo|Logistics|Aleppo|Nursing,First Aid,Social Media,IT Support
+suitable|Damascus|First Aid,Data Entry,Photography,Driving|Damascus|Data Entry,First Aid
+not_suitable|Tartus|First Aid,Fundraising,Construction,Driving|Hama|Driving,First Aid,Social Media
+suitable|Daraa|Driving,Social Media,Nursing,Event Planning|Daraa|Counseling,Social Media,Nursing
+suitable|Idlib|Driving,Public Speaking,Graphic Design|Idlib|Driving,Public Speaking
+not_suitable|Aleppo|Public Speaking,Photography,Logistics|Aleppo|Legal Aid,Carpentry
+not_suitable|Idlib|Photography,IT Support,Social Media,First Aid|Aleppo|IT Support,Teaching,First Aid
+not_suitable|Idlib|Event Planning,Carpentry,Teaching|Hama|Event Planning,Counseling,Carpentry
+suitable|Hama|Photography,Translation,IT Support|Hama|Photography,IT Support
+suitable|Hama|Fundraising,First Aid|Hama|Fundraising,Event Planning
+suitable|Lattakia|Public Speaking|Lattakia|Public Speaking,Construction
+suitable|Homs|Data Entry,Teaching,Counseling|Homs|Teaching,Event Planning
+not_suitable|Raqqa|Graphic Design,IT Support|Raqqa|Event Planning,Construction
+not_suitable|Hama|Counseling,Nursing|Raqqa|Counseling,Photography
+not_suitable|Daraa|Legal Aid,Translation|Daraa|Counseling,First Aid
+not_suitable|Lattakia|Carpentry,First Aid,IT Support|Tartus|First Aid,Teaching,IT Support
+not_suitable|Lattakia|Data Entry|Lattakia|Public Speaking
+not_suitable|Damascus|Legal Aid,Construction|Damascus|Nursing
+suitable|Aleppo|Translation,Nursing,Event Planning,IT Support|Aleppo|IT Support,Nursing,Event Planning
+not_suitable|Idlib|Cooking,Social Media,Logistics|Idlib|Public Speaking,Cooking,Graphic Design
+not_suitable|Homs|Photography|Homs|Cooking,Data Entry,Accounting,Fundraising
+not_suitable|Aleppo|Counseling,First Aid,Data Entry|Aleppo|Translation,Accounting
+not_suitable|Deir ez-Zor|Logistics,Nursing,Social Media|Lattakia|Logistics,Nursing,Social Media
+suitable|Homs|Event Planning|Homs|Event Planning
+suitable|Lattakia|Cooking|Lattakia|Cooking
+suitable|Daraa|Counseling|Daraa|Counseling
+not_suitable|Damascus|Nursing,Translation|Hama|Nursing
+suitable|Deir ez-Zor|Construction,Fundraising|Deir ez-Zor|Fundraising,Counseling,Construction
+not_suitable|Idlib|Nursing|Idlib|Teaching,Driving
+not_suitable|Homs|Cooking,Translation|Raqqa|Cooking,Translation
+suitable|Lattakia|IT Support,Logistics|Lattakia|IT Support
+not_suitable|Daraa|Public Speaking|Idlib|Public Speaking,Translation
+not_suitable|Hama|Logistics,IT Support|Hama|Translation,Accounting,Construction
+not_suitable|Damascus|Cooking,Photography,Driving|Idlib|Driving,Cooking,Photography
+suitable|Aleppo|Fundraising|Aleppo|Fundraising
+suitable|Tartus|Counseling,Logistics,Teaching|Tartus|Counseling,Teaching,Logistics
+suitable|Hama|Logistics|Hama|Logistics
+suitable|Daraa|Fundraising,Graphic Design|Daraa|Graphic Design
+suitable|Hama|Accounting,Legal Aid,Carpentry|Hama|Accounting,Carpentry,Legal Aid
+suitable|Raqqa|Graphic Design,IT Support,Event Planning,Driving|Raqqa|Event Planning,Driving,Graphic Design
+suitable|Idlib|Counseling,Graphic Design,Legal Aid|Idlib|Legal Aid
+suitable|Deir ez-Zor|Nursing|Deir ez-Zor|First Aid,Nursing
+suitable|Daraa|Graphic Design,Cooking,Data Entry|Daraa|Data Entry,Driving
+not_suitable|Daraa|Public Speaking,Construction|Daraa|Event Planning,IT Support
+not_suitable|Aleppo|Carpentry,First Aid|Deir ez-Zor|Translation,Data Entry
+suitable|Aleppo|Nursing,Accounting,Photography,IT Support|Aleppo|Photography,Nursing
+suitable|Tartus|Nursing,Construction,Photography,Legal Aid|Tartus|Nursing,Photography
+suitable|Deir ez-Zor|Fundraising,Counseling,Social Media|Deir ez-Zor|Logistics,Fundraising
+suitable|Idlib|Logistics|Idlib|Logistics
+suitable|Raqqa|Legal Aid,Carpentry,IT Support|Raqqa|Driving,IT Support,Legal Aid
+suitable|Damascus|Construction,Driving,Nursing|Damascus|Photography,Driving,Construction
+suitable|Deir ez-Zor|Carpentry,Legal Aid|Deir ez-Zor|Social Media,Carpentry,Legal Aid
+suitable|Lattakia|Translation|Lattakia|Translation,Legal Aid
+suitable|Damascus|Public Speaking,Construction,Driving|Damascus|Construction
+not_suitable|Idlib|Cooking,Accounting,Public Speaking,Logistics,Legal Aid|Daraa|Legal Aid,Cooking,Logistics
+suitable|Deir ez-Zor|Public Speaking,Cooking,Counseling,Logistics,Nursing|Deir ez-Zor|Public Speaking,Nursing,Counseling
+suitable|Damascus|Legal Aid,Graphic Design,Driving|Damascus|Driving
+not_suitable|Deir ez-Zor|Social Media,Driving|Deir ez-Zor|Data Entry
+suitable|Hama|Fundraising|Hama|Fundraising,First Aid
+suitable|Homs|Teaching,Legal Aid|Homs|Cooking,Legal Aid
+not_suitable|Idlib|Graphic Design|Idlib|Legal Aid,Teaching,Accounting,Fundraising
+not_suitable|Daraa|Carpentry|Daraa|Legal Aid,Logistics,Accounting,Cooking
+suitable|Daraa|Logistics,Fundraising|Daraa|Logistics,Cooking,Fundraising
+not_suitable|Tartus|Photography|Homs|Photography
+suitable|Daraa|Teaching,Social Media,IT Support|Daraa|Teaching
+suitable|Daraa|Graphic Design,Accounting,Data Entry,Event Planning,Counseling|Daraa|Counseling,Data Entry,Graphic Design
+suitable|Hama|Public Speaking,Legal Aid,Carpentry|Hama|Legal Aid,Carpentry,Public Speaking
+suitable|Daraa|Accounting,Teaching,IT Support,Graphic Design|Daraa|Graphic Design,Teaching
+suitable|Hama|Graphic Design,Accounting|Hama|Accounting
+not_suitable|Hama|Photography|Hama|IT Support,Fundraising
+suitable|Hama|Logistics|Hama|Event Planning,Logistics
+not_suitable|Daraa|Legal Aid,Driving,Graphic Design|Daraa|Logistics
+suitable|Tartus|Legal Aid,Public Speaking,Event Planning|Tartus|Accounting,Event Planning
+suitable|Lattakia|Construction,Driving,Logistics,Accounting|Lattakia|Construction,Logistics
+suitable|Raqqa|Teaching,Photography,Data Entry|Raqqa|Legal Aid,Teaching
+not_suitable|Homs|Carpentry,Counseling|Homs|Nursing,Logistics,Public Speaking,Data Entry
+suitable|Hama|Photography|Hama|Photography
+not_suitable|Tartus|Graphic Design,Data Entry,Logistics,Public Speaking|Damascus|Logistics,Public Speaking
+not_suitable|Daraa|Event Planning,Social Media|Damascus|First Aid,Graphic Design,Social Media
+suitable|Raqqa|Data Entry,Public Speaking|Raqqa|Data Entry,Public Speaking
+suitable|Idlib|Carpentry,Public Speaking|Idlib|Construction,Carpentry,Public Speaking
+suitable|Daraa|Accounting,IT Support,Social Media,Construction|Daraa|Construction,IT Support
+not_suitable|Aleppo|Nursing|Deir ez-Zor|Legal Aid
+not_suitable|Aleppo|Cooking,Photography|Aleppo|Nursing,Accounting,Data Entry
+suitable|Raqqa|IT Support,Legal Aid,Teaching|Raqqa|Teaching,Legal Aid,IT Support
+not_suitable|Lattakia|Legal Aid,Fundraising|Hama|Logistics
+suitable|Daraa|Legal Aid|Daraa|Legal Aid
+not_suitable|Damascus|Accounting,Logistics,Driving,Carpentry|Deir ez-Zor|Carpentry,Driving
+not_suitable|Lattakia|Fundraising|Aleppo|Legal Aid,Data Entry
+suitable|Idlib|Fundraising,Counseling,Accounting|Idlib|Counseling,Accounting
+not_suitable|Homs|Accounting,Cooking|Homs|First Aid
+not_suitable|Hama|Carpentry,Translation|Hama|Data Entry,Fundraising
+suitable|Aleppo|Translation,Cooking,Accounting|Aleppo|Translation
+suitable|Tartus|Driving,IT Support,Teaching|Tartus|IT Support
+not_suitable|Hama|Teaching,Fundraising,First Aid|Hama|Driving,Event Planning,First Aid,Logistics
+not_suitable|Lattakia|Cooking|Hama|Cooking
+not_suitable|Damascus|Carpentry,IT Support,Public Speaking,Accounting|Aleppo|Accounting,IT Support,Carpentry
+not_suitable|Aleppo|Legal Aid,Graphic Design,Public Speaking|Tartus|Fundraising,Graphic Design,Photography
+suitable|Aleppo|Carpentry|Aleppo|Carpentry
+suitable|Raqqa|Construction|Raqqa|Construction,Data Entry
+not_suitable|Daraa|Cooking,IT Support|Daraa|Accounting,Construction
+suitable|Idlib|Driving,Counseling|Idlib|Counseling,Driving
+not_suitable|Daraa|Logistics,Event Planning|Daraa|Accounting,Photography
+not_suitable|Aleppo|Carpentry,Social Media,Accounting|Aleppo|Social Media,Construction,Nursing
+not_suitable|Daraa|Fundraising,Legal Aid|Daraa|Translation,Teaching
+not_suitable|Tartus|Construction,Public Speaking,Teaching|Raqqa|Construction,Legal Aid,Teaching
+not_suitable|Daraa|Legal Aid,Nursing,Translation|Daraa|Photography
+suitable|Daraa|IT Support|Daraa|IT Support
+not_suitable|Raqqa|Public Speaking|Raqqa|Translation,Accounting
+not_suitable|Tartus|Data Entry,Translation,Counseling|Tartus|Construction,First Aid
+suitable|Deir ez-Zor|Driving|Deir ez-Zor|Driving
+suitable|Lattakia|Nursing|Lattakia|Nursing
+not_suitable|Hama|Carpentry|Hama|Accounting,Carpentry,Legal Aid
+not_suitable|Lattakia|Photography|Tartus|Data Entry,Logistics,Carpentry
+not_suitable|Lattakia|Accounting,Construction|Lattakia|Graphic Design,IT Support
+suitable|Lattakia|Data Entry,Teaching,Logistics,Driving|Lattakia|Logistics,Driving,Translation
+suitable|Damascus|Social Media,Counseling,Photography|Damascus|Social Media,Photography,Graphic Design
+suitable|Aleppo|Cooking,Driving|Aleppo|Cooking
+suitable|Lattakia|Legal Aid,Cooking|Lattakia|Legal Aid
+not_suitable|Homs|Counseling|Homs|Public Speaking,Fundraising
+suitable|Tartus|Fundraising,Logistics,First Aid,Photography|Tartus|IT Support,Logistics,Fundraising
+not_suitable|Lattakia|Photography|Hama|Construction
+suitable|Lattakia|Public Speaking,Logistics,IT Support,Event Planning|Lattakia|Event Planning,Public Speaking
+suitable|Homs|Social Media,Logistics,Translation,Nursing|Homs|Social Media,Nursing,Public Speaking
+not_suitable|Idlib|Accounting,Social Media|Raqqa|Construction
+suitable|Damascus|Event Planning,Photography,Fundraising|Damascus|Fundraising
+not_suitable|Tartus|Public Speaking|Tartus|Graphic Design,Accounting,Driving,Legal Aid
+suitable|Lattakia|First Aid,Accounting,Cooking|Lattakia|First Aid,Cooking
+not_suitable|Deir ez-Zor|Counseling,Cooking|Deir ez-Zor|First Aid,Nursing,IT Support
+not_suitable|Tartus|Event Planning|Idlib|Nursing,Driving,Event Planning
+suitable|Deir ez-Zor|Nursing,Driving,Legal Aid|Deir ez-Zor|Fundraising,Driving
+suitable|Deir ez-Zor|Accounting,Photography,Teaching,Legal Aid|Deir ez-Zor|Accounting,Teaching,Legal Aid
+not_suitable|Aleppo|Data Entry,Counseling|Lattakia|Counseling,Data Entry
+suitable|Raqqa|Legal Aid,Accounting,First Aid|Raqqa|Driving,First Aid
+not_suitable|Idlib|Accounting|Idlib|Translation,Photography
+suitable|Aleppo|IT Support,Event Planning,Photography,Fundraising|Aleppo|Fundraising,Event Planning,IT Support
+not_suitable|Deir ez-Zor|Graphic Design,Carpentry|Deir ez-Zor|Construction,Photography
+suitable|Tartus|Construction,Graphic Design,Social Media|Tartus|Construction,Graphic Design
+suitable|Raqqa|Logistics,Driving,Carpentry,Teaching|Raqqa|Driving,Legal Aid,Teaching
+not_suitable|Homs|Graphic Design|Homs|Construction,Cooking,Nursing
+suitable|Daraa|Legal Aid,Carpentry,First Aid,Photography|Daraa|Carpentry,Legal Aid,First Aid
+suitable|Lattakia|Accounting,Graphic Design|Lattakia|Event Planning,Accounting,Graphic Design
+not_suitable|Tartus|Legal Aid,Logistics|Raqqa|Logistics
+not_suitable|Hama|Logistics,Legal Aid|Tartus|Event Planning,Data Entry

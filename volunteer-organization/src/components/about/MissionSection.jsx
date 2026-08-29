@@ -1,0 +1,30 @@
+import { motion } from "framer-motion";
+import Typography from "../ui/Typography";
+import VolunteersIllustration from "../icons/VolunteersIllustration";
+
+export default function MissionSection() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      className="grid md:grid-cols-2 gap-12 items-center"
+    >
+      <div>
+        <Typography variant="h2" gutterBottom>
+          Our Mission
+        </Typography>
+        <Typography variant="body" className="leading-relaxed">
+          We believe that every individual has the power to make a positive impact.
+          Our mission is to connect volunteers with meaningful opportunities that
+          strengthen communities and inspire long‑term change.
+        </Typography>
+      </div>
+
+      <div className="flex flex-col items-center gap-6">
+        <VolunteersIllustration className="w-full max-w-xs" />
+      </div>
+    </motion.div>
+  );
+}

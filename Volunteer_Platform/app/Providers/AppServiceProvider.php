@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use App\Models\Opportunity;
+use App\Policies\OpportunityPolicy;
+use App\Models\Participation;
+use App\Observers\ParticipationObserver;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Notifications\ResetPassword;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        Participation::observe(ParticipationObserver::class);
+
+        Gate::policy(Opportunity::class, OpportunityPolicy::class);
+        ResetPassword::createUrlUsing(function ($user, string $token) {
+            $frontendUrl = config('app.frontend_url', 'http://localhost:5173');
+
+            return "{$frontendUrl}/reset-password?token={$token}&email=" . urlencode($user->email);
+        });
+    }
+}

@@ -1,0 +1,1 @@
+import{t as e}from"./useQuery-BISPaT6q.js";import{A as t,r as n,t as r}from"./index-DfKPzZQ2.js";function i(){let i=r().data??[];return e({queryKey:n.admin.volunteers,queryFn:()=>t(i)})}export{i as t};

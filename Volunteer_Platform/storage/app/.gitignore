@@ -1,0 +1,7 @@
+*
+!private/
+!public/
+!models/
+!models/**
+!volunteer_opportunity_dataset.txt
+!.gitignore

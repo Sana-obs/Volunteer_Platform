@@ -1,0 +1,1 @@
+import{t as e}from"./useQuery-BISPaT6q.js";import{z as t}from"./opportunities-Dc6GRlma.js";import{r as n}from"./index-DfKPzZQ2.js";function r(){return e({queryKey:n.categories.all,queryFn:t})}export{r as t};

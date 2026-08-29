@@ -1,0 +1,1 @@
+import{f as e,s as t}from"./Typography-jDwHmxA4.js";var n=e(t(),1);function r(e,t){let r=(0,n.useRef)(null);return(0,n.useEffect)(()=>{if(!e)return;function n(e){r.current&&!r.current.contains(e.target)&&t()}return document.addEventListener(`mousedown`,n),()=>document.removeEventListener(`mousedown`,n)},[e,t]),r}export{r as t};

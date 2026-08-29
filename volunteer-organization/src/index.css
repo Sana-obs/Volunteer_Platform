@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+/* @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Inter:wght@400;500;600&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=Inter:wght@400;500;600&display=swap');
+
+@theme {
+  --color-primary: #FD7E14;
+  --color-secondary: #146B72;
+  --color-canvas: #F5F7FA;
+  --color-bg: #FFFFFF;
+  --color-heading: #111827;
+  --color-body: #667085;
+  --color-danger: #F04438;
+  --color-dangerHover: #f87171;
+  --color-field: #ffffff;
+
+  /* Button, input, and alert states */
+  --color-success: #12B76A;
+  --color-successHover: #17c785;
+
+  --color-info: #3B82F6;
+
+  /* Achievement highlights */
+  --color-achievement: #7F56D9;
+
+  /* Admin theme */
+  --color-adminBg0: #161D2B;
+  --color-adminBg1: #1D2537;
+  --color-adminBg2: #242D42;
+  --color-adminBorder: rgba(255, 255, 255, 0.08);
+  --color-adminTextHi: #F3F5F8;
+  --color-adminTextLo: rgba(243, 245, 248, 0.55);
+  --color-adminAccent: var(--color-secondary);
+  --color-adminAccentSoft: #5EEAD4;
+
+  --font-display: 'Tajawal', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+/* Heading typography */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+/* Override browser autofill background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-field) inset;
+  box-shadow: 0 0 0 1000px var(--color-field) inset;
+  -webkit-text-fill-color: var(--color-heading);
+  caret-color: var(--color-heading);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Navigation underline */
+.nav-underline {
+  position: relative;
+}
+
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  width: 0%;
+  background-color: var(--color-primary);
+  transition: width 0.3s ease;
+}
+
+.nav-underline:hover::after {
+  width: 100%;
+}
+
+/* Authentication card entrance */
+@keyframes shell-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-shell-in {
+  animation: shell-in 0.45s ease-out both;
+}
+
+/* Reduced-motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-shell-in {
+    animation: none;
+  }
+
+  .animate-pulse {
+    animation: none;
+    opacity: 0.6;
+  }
+
+  .animate-unlock-glow {
+    animation: none;
+  }
+
+  .animate-button-ripple {
+    animation: none;
+    display: none;
+  }
+}
+
+/* Achievement unlock effect */
+@keyframes unlock-glow {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(
+      in srgb,
+      var(--color-primary) 45%,
+      transparent
+    );
+  }
+
+  70% {
+    box-shadow: 0 0 0 14px color-mix(
+      in srgb,
+      var(--color-primary) 0%,
+      transparent
+    );
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 color-mix(
+      in srgb,
+      var(--color-primary) 0%,
+      transparent
+    );
+  }
+}
+
+.animate-unlock-glow {
+  animation: unlock-glow 1.1s ease-out 1;
+}
+
+/* Button ripple effect */
+@keyframes button-ripple {
+  from {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.animate-button-ripple {
+  animation: button-ripple 0.6s ease-out;
+}
