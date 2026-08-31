@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import {
   useQuery,
@@ -12,6 +12,11 @@ import { fetchRecentNotifications } from "../services/notifications";
 import { getOrganizationId } from "../utils/auth/getOrganizationId";
 
 const POLL_INTERVAL_MS = 5000;
+
+// Stable reference for the "no data yet" case so consumers that compare
+// item identity across renders (e.g. useShowMore) don't see a new array
+// on every render.
+const EMPTY_ITEMS = [];
 
 export default function useRecentUpdates() {
   const { user, isAuthenticated, accountType } = useAuth();
@@ -31,14 +36,17 @@ export default function useRecentUpdates() {
       accountType === ACCOUNT_TYPES.ADMIN
     );
 
-  const queryKey = [
-    "recentNotifications",
-    accountType,
-    organizationId ?? null,
-  ];
+  // queryKey must be built only from stable primitives. React Query hashes
+  // it, so a fresh array literal with the same contents is treated as the
+  // same query — but memoizing keeps the reference stable for the
+  // setQueryData / invalidateQueries calls in the onDismiss closures below.
+  const queryKey = useMemo(
+    () => ["recentNotifications", accountType, organizationId ?? null],
+    [accountType, organizationId],
+  );
 
   const {
-    data: items = [],
+    data: items = EMPTY_ITEMS,
     isError,
     refetch,
   } = useQuery({
@@ -64,35 +72,46 @@ export default function useRecentUpdates() {
     refetch();
   }, [location.pathname, isNotifiable, refetch]);
 
-  // Optimistically update the cache, then revalidate from the source.
-  const syncedItems = items.map((item) => {
-    if (!item.onDismiss) {
-      return item;
-    }
+  // Wrap each item's onDismiss to optimistically update the cache, then
+  // revalidate from the source. Memoized so the returned array (and the
+  // wrapper objects inside it) keep a stable identity between renders and
+  // only change when the underlying query data changes. Without this, a
+  // fresh array of freshly-built objects is produced on every render, which
+  // sends any consumer that compares item identity across renders
+  // (useShowMore in notifications.jsx) into an infinite setState-in-render
+  // loop → "Too many re-renders".
+  const syncedItems = useMemo(
+    () =>
+      items.map((item) => {
+        if (!item.onDismiss) {
+          return item;
+        }
 
-    return {
-      ...item,
-      onDismiss: async (...args) => {
-        const result = await item.onDismiss(...args);
+        return {
+          ...item,
+          onDismiss: async (...args) => {
+            const result = await item.onDismiss(...args);
 
-        queryClient.setQueryData(queryKey, (currentItems = []) =>
-          currentItems.filter(
-            (currentItem) => currentItem.id !== item.id,
-          ),
-        );
+            queryClient.setQueryData(queryKey, (currentItems = []) =>
+              currentItems.filter(
+                (currentItem) => currentItem.id !== item.id,
+              ),
+            );
 
-        queryClient.invalidateQueries({
-          queryKey,
-          refetchType: "active",
-        });
+            queryClient.invalidateQueries({
+              queryKey,
+              refetchType: "active",
+            });
 
-        return result;
-      },
-    };
-  });
+            return result;
+          },
+        };
+      }),
+    [items, queryClient, queryKey],
+  );
 
   return {
-    items: isNotifiable ? syncedItems : [],
+    items: isNotifiable ? syncedItems : EMPTY_ITEMS,
     hasUnseen: isNotifiable && syncedItems.length > 0,
     hasError: isNotifiable && isError,
   };

@@ -1,1 +1,0 @@
-import{o as e}from"./Typography-jDwHmxA4.js";import{G as t,v as n}from"./index-DfKPzZQ2.js";var r=e();function i({participation:e,className:i=``}){let a=t(e);if(!a)return null;let o=a.icon;return(0,r.jsxs)(n,{color:a.color,className:`inline-flex items-center gap-1.5 ${i}`,children:[o&&(0,r.jsx)(o,{size:13,"aria-hidden":`true`}),a.label]})}export{i as t};

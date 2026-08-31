@@ -126,8 +126,8 @@ export default function Navbar({ role = "guest" }) {
           >
             {/* حاوية صغيرة (badge) حول أيقونة الشعار — تحسين بصري بحت،
                 ما بيأثر على أبعاد أو سلوك أي عنصر تاني بالسطر */}
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06] transition-colors duration-200 group-hover:border-primary/30">
-              <LogoIcon className="h-6 w-6 text-white" />
+            <div className="flex shrink-0 items-center justify-center">
+              <LogoIcon className="h-9 w-9 text-white" />
             </div>
 
               <span className="block whitespace-nowrap text-xl font-bold leading-tight text-white">

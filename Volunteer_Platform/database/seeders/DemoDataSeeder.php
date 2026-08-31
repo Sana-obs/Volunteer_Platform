@@ -124,20 +124,45 @@ class DemoDataSeeder extends Seeder
         );
 
         $volunteerNames = [
-            ['Ahmad', 'Halabi'], ['Sara', 'Abdullah'], ['Youssef', 'Masri'],
-            ['Lina', 'Shami'], ['Karim', 'Najjar'], ['Rahaf', 'Khatib'],
-            ['Mohammad', 'Diab'], ['Nour', 'Hassan'], ['Omar', 'Qassem'],
-            ['Yasmin', 'Ahmad'], ['Khaled', 'Saleh'], ['Reem', 'Sheikh'],
-            ['Tarek', 'Ali'], ['Heba', 'Zaidan'], ['Samer', 'Youssef'],
-            ['Dima', 'Jundi'], ['Wael', 'Hamdan'], ['Maya', 'Shehade'],
-            ['Basel', 'Rifai'], ['Joud', 'Issa'], ['Rami', 'Kassem'],
-            ['Layla', 'Homsi'], ['Fadi', 'Nasser'], ['Salma', 'Barakat'],
-            ['Ziad', 'Mansour'], ['Hanan', 'Idlibi'], ['Nabil', 'Sarraf'],
-            ['Rana', 'Akkad'], ['Hussam', 'Faris'], ['Ola', 'Turkmani'],
-            ['Firas', 'Btaish'], ['Nadia', 'Homsi'],
+            ['Ahmad', 'Halabi'],
+            ['Sara', 'Abdullah'],
+            ['Youssef', 'Masri'],
+            ['Lina', 'Shami'],
+            ['Karim', 'Najjar'],
+            ['Rahaf', 'Khatib'],
+            ['Mohammad', 'Diab'],
+            ['Nour', 'Hassan'],
+            ['Omar', 'Qassem'],
+            ['Yasmin', 'Ahmad'],
+            ['Khaled', 'Saleh'],
+            ['Reem', 'Sheikh'],
+            ['Tarek', 'Ali'],
+            ['Heba', 'Zaidan'],
+            ['Samer', 'Youssef'],
+            ['Dima', 'Jundi'],
+            ['Wael', 'Hamdan'],
+            ['Maya', 'Shehade'],
+            ['Basel', 'Rifai'],
+            ['Joud', 'Issa'],
+            ['Rami', 'Kassem'],
+            ['Layla', 'Homsi'],
+            ['Fadi', 'Nasser'],
+            ['Salma', 'Barakat'],
+            ['Ziad', 'Mansour'],
+            ['Hanan', 'Idlibi'],
+            ['Nabil', 'Sarraf'],
+            ['Rana', 'Akkad'],
+            ['Hussam', 'Faris'],
+            ['Ola', 'Turkmani'],
+            ['Firas', 'Btaish'],
+            ['Nadia', 'Homsi'],
         ];
 
-        $educationLevels = ['High School', 'Diploma', "Bachelor's Degree"];
+        $educationLevels = [
+            'High School',
+            'Diploma',
+            "Bachelor's Degree",
+        ];
 
         $aboutTexts = [
             'Interested in community service and humanitarian activities.',
@@ -188,41 +213,116 @@ class DemoDataSeeder extends Seeder
                     ]
                 );
 
-                $skillCount = min(3, count($skillIds));
-                $start = $i % count($skillIds);
+                /*
+                 * Matching test for volunteer 0:
+                 * - City: first governorate (Aleppo in the current demo data)
+                 * - Skills: Teaching + First Aid
+                 *
+                 * These two skills exist in the current database and are also
+                 * present in the existing Naive Bayes model vocabulary.
+                 */
+                if ($i === 0) {
+                    $teachingSkillId = Skill::where('name', 'Teaching')->value('id');
+                    $firstAidSkillId = Skill::where('name', 'First Aid')->value('id');
 
-                $randomSkills = collect(range(0, $skillCount - 1))
-                    ->map(fn ($offset) => $skillIds[($start + $offset) % count($skillIds)])
-                    ->all();
+                    $volunteer->skills()->sync(
+                        array_values(
+                            array_filter([
+                                $teachingSkillId,
+                                $firstAidSkillId,
+                            ])
+                        )
+                    );
+                } else {
+                    $skillCount = min(3, count($skillIds));
+                    $start = $i % count($skillIds);
 
-                $volunteer->skills()->sync($randomSkills);
+                    $randomSkills = collect(range(0, $skillCount - 1))
+                        ->map(
+                            fn ($offset) =>
+                                $skillIds[($start + $offset) % count($skillIds)]
+                        )
+                        ->all();
+
+                    $volunteer->skills()->sync($randomSkills);
+                }
 
                 return $volunteer;
             }
         );
-
-        /*
-         * 13 فرصة تجريبية: 7 مكتملة، 3 جارية، 3 مفتوحة للتسجيل.
-         * جميع الفرص مرتبطة بالمنظمات الموثقة فقط.
-         */
         $opportunityData = [
-            ['title' => 'Food Aid Distribution', 'timing' => 'completed'],
-            ['title' => 'Community Awareness Campaign', 'timing' => 'completed'],
-            ['title' => 'Educational Support for Children', 'timing' => 'completed'],
-            ['title' => 'Public Park Cleanup Campaign', 'timing' => 'completed'],
-            ['title' => 'Winter Clothes Distribution', 'timing' => 'completed'],
-            ['title' => 'Orphan Support Initiative', 'timing' => 'completed'],
-            ['title' => 'Tree Planting Campaign', 'timing' => 'completed'],
-            ['title' => 'Health Awareness Event', 'timing' => 'ongoing'],
-            ['title' => 'Digital Literacy Workshop', 'timing' => 'ongoing'],
-            ['title' => 'First Aid Training Workshop', 'timing' => 'ongoing'],
-            ['title' => 'Elderly Assistance Program', 'timing' => 'open'],
-            ['title' => 'Blood Donation Campaign', 'timing' => 'open'],
-            ['title' => 'Ramadan Food Baskets Program', 'timing' => 'open'],
+            [
+                'title' => 'Food Aid Distribution',
+                'timing' => 'completed',
+                'match_test' => 'city_and_skills',
+            ],
+            [
+                'title' => 'Community Awareness Campaign',
+                'timing' => 'completed',
+                'match_test' => 'city_only',
+            ],
+            [
+                'title' => 'Educational Support for Children',
+                'timing' => 'completed',
+                'match_test' => 'skills_only',
+            ],
+            [
+                'title' => 'Public Park Cleanup Campaign',
+                'timing' => 'completed',
+                'match_test' => 'no_match',
+            ],
+            [
+                'title' => 'Winter Clothes Distribution',
+                'timing' => 'completed',
+                'match_test' => null,
+            ],
+            [
+                'title' => 'Orphan Support Initiative',
+                'timing' => 'completed',
+                'match_test' => null,
+            ],
+            [
+                'title' => 'Tree Planting Campaign',
+                'timing' => 'completed',
+                'match_test' => null,
+            ],
+            [
+                'title' => 'Health Awareness Event',
+                'timing' => 'ongoing',
+                'match_test' => null,
+            ],
+            [
+                'title' => 'Digital Literacy Workshop',
+                'timing' => 'ongoing',
+                'match_test' => null,
+            ],
+            [
+                'title' => 'First Aid Training Workshop',
+                'timing' => 'ongoing',
+                'match_test' => null,
+            ],
+            [
+                'title' => 'Elderly Assistance Program',
+                'timing' => 'open',
+                'match_test' => null,
+            ],
+            [
+                'title' => 'Blood Donation Campaign',
+                'timing' => 'open',
+                'match_test' => null,
+            ],
+            [
+                'title' => 'Ramadan Food Baskets Program',
+                'timing' => 'open',
+                'match_test' => null,
+            ],
         ];
 
         $verifiedOrganizations = $organizations
-            ->filter(fn ($organization) => $organization->status === OrganizationStatus::Verified)
+            ->filter(
+                fn ($organization) =>
+                    $organization->status === OrganizationStatus::Verified
+            )
             ->values();
 
         $opportunities = collect($opportunityData)->map(
@@ -233,6 +333,7 @@ class DemoDataSeeder extends Seeder
                 $skillIds
             ) {
                 $timing = $data['timing'];
+                $matchTest = $data['match_test'] ?? null;
 
                 [$start, $end, $registerStart, $registerEnd] = match ($timing) {
                     'completed' => [
@@ -241,12 +342,14 @@ class DemoDataSeeder extends Seeder
                         now()->subDays(40 - ($i * 2)),
                         now()->subDays(27 - ($i * 2)),
                     ],
+
                     'ongoing' => [
                         now()->subHours(2 + ($i * 2)),
                         now()->addHours(4 + $i),
                         now()->subDays(12),
                         now()->subDay(),
                     ],
+
                     'open' => [
                         now()->addDays(8 + $i),
                         now()->addDays(10 + $i),
@@ -255,21 +358,85 @@ class DemoDataSeeder extends Seeder
                     ],
                 };
 
-                $organization = $verifiedOrganizations[$i % $verifiedOrganizations->count()];
+                $organization = $verifiedOrganizations[
+                    $i % $verifiedOrganizations->count()
+                ];
 
                 /*
-                 * العنوان وحده هو مفتاح المطابقة (وليس العنوان+المنظمة) —
-                 * يضمن عدم تكرار نفس الفرصة إطلاقاً حتى لو تغيّر منطق
-                 * تعيين المنظمة مستقبلاً، بدل خطر إنشاء سجل جديد بنفس
-                 * العنوان لمنظمة مختلفة.
+                 * Matching test:
+                 * Opportunity 11 (the first open opportunity) is intentionally
+                 * matched to volunteer 0.
+                 */
+                if ($i === 10) {
+                    $governorateId = $governorateIds[0];
+
+                    $teachingSkillId = Skill::where('name', 'Teaching')->value('id');
+                    $firstAidSkillId = Skill::where('name', 'First Aid')->value('id');
+
+                    $opportunitySkills = array_values(
+                        array_filter([
+                            $teachingSkillId,
+                            $firstAidSkillId,
+                        ])
+                    );
+                } else {
+                    $governorateId = match ($matchTest) {
+                        'city_and_skills',
+                        'city_only' => $governorateIds[0],
+
+                        'skills_only',
+                        'no_match' => $governorateIds[
+                            1 % count($governorateIds)
+                        ],
+
+                        default => $governorateIds[
+                            $i % count($governorateIds)
+                        ],
+                    };
+
+                    $opportunitySkills = match ($matchTest) {
+                        'city_and_skills',
+                        'skills_only' => [
+                            $skillIds[0],
+                            $skillIds[1],
+                        ],
+
+                        'city_only',
+                        'no_match' => [
+                            $skillIds[3 % count($skillIds)],
+                            $skillIds[4 % count($skillIds)],
+                        ],
+
+                        default => collect(
+                            range(
+                                0,
+                                min(1, count($skillIds) - 1)
+                            )
+                        )
+                            ->map(
+                                fn ($offset) =>
+                                    $skillIds[
+                                        ($i + $offset) % count($skillIds)
+                                    ]
+                            )
+                            ->all(),
+                    };
+                }
+
+                /*
+                 * العنوان هو مفتاح المطابقة لضمان عدم إنشاء
+                 * فرصة مكررة بنفس العنوان.
                  */
                 $opportunity = Opportunity::updateOrCreate(
                     ['title' => $data['title']],
                     [
                         'organization_id' => $organization->id,
-                        'category_id' => $categoryIds[$i % count($categoryIds)],
-                        'governorate_id' => $governorateIds[$i % count($governorateIds)],
-                        'description' => 'A structured volunteering opportunity designed to support the local community through practical and supervised activities.',
+                        'category_id' => $categoryIds[
+                            $i % count($categoryIds)
+                        ],
+                        'governorate_id' => $governorateId,
+                        'description' =>
+                            'A structured volunteering opportunity designed to support the local community through practical and supervised activities.',
                         'start_date' => $start,
                         'end_date' => $end,
                         'register_start_at' => $registerStart,
@@ -284,13 +451,6 @@ class DemoDataSeeder extends Seeder
                     ]
                 );
 
-                $skillCount = min(2, count($skillIds));
-                $startSkill = $i % count($skillIds);
-
-                $opportunitySkills = collect(range(0, $skillCount - 1))
-                    ->map(fn ($offset) => $skillIds[($startSkill + $offset) % count($skillIds)])
-                    ->all();
-
                 $opportunity->skills()->sync($opportunitySkills);
 
                 $opportunity->setAttribute('_timing', $timing);
@@ -299,22 +459,37 @@ class DemoDataSeeder extends Seeder
             }
         );
 
-        $this->seedParticipations($volunteers, $opportunities);
+        $this->seedParticipations(
+            $volunteers,
+            $opportunities
+        );
 
         $this->command->info(
             'تمت تعبئة بيانات العرض: '
-            . $organizations->count() . ' منظمات، '
-            . $volunteers->count() . ' متطوعين، '
-            . $opportunities->count() . ' فرص، '
-            . \App\Models\Participation::count() . ' مشاركة.'
+            . $organizations->count()
+            . ' منظمات، '
+            . $volunteers->count()
+            . ' متطوعين، '
+            . $opportunities->count()
+            . ' فرص، '
+            . \App\Models\Participation::count()
+            . ' مشاركة.'
         );
     }
 
     private function seedParticipations($volunteers, $opportunities): void
     {
-        $completed = $opportunities->filter(fn ($o) => $o->_timing === 'completed')->values();
-        $ongoing = $opportunities->filter(fn ($o) => $o->_timing === 'ongoing')->values();
-        $open = $opportunities->filter(fn ($o) => $o->_timing === 'open')->values();
+        $completed = $opportunities
+            ->filter(fn ($o) => $o->_timing === 'completed')
+            ->values();
+
+        $ongoing = $opportunities
+            ->filter(fn ($o) => $o->_timing === 'ongoing')
+            ->values();
+
+        $open = $opportunities
+            ->filter(fn ($o) => $o->_timing === 'open')
+            ->values();
 
         foreach ($completed as $index => $opportunity) {
             $participants = [
@@ -326,11 +501,18 @@ class DemoDataSeeder extends Seeder
 
             foreach ($participants as $participantIndex => $volunteer) {
                 \App\Models\Participation::updateOrCreate(
-                    ['opportunity_id' => $opportunity->id, 'volunteer_id' => $volunteer->user_id],
+                    [
+                        'opportunity_id' => $opportunity->id,
+                        'volunteer_id' => $volunteer->user_id,
+                    ],
                     [
                         'status' => 'accepted',
-                        'committed_hours' => $participantIndex === 0 ? 4 : 3,
-                        'hours_logged' => $participantIndex === 0 ? 4 : 2 + ($participantIndex % 3),
+                        'committed_hours' =>
+                            $participantIndex === 0 ? 4 : 3,
+                        'hours_logged' =>
+                            $participantIndex === 0
+                                ? 4
+                                : 2 + ($participantIndex % 3),
                         'participated_at' => $opportunity->start_date,
                     ]
                 );
@@ -338,12 +520,19 @@ class DemoDataSeeder extends Seeder
 
             if ($index === 1) {
                 \App\Models\Participation::updateOrCreate(
-                    ['opportunity_id' => $opportunity->id, 'volunteer_id' => $volunteers[10]->user_id],
+                    [
+                        'opportunity_id' => $opportunity->id,
+                        'volunteer_id' => $volunteers[10]->user_id,
+                    ],
                     [
                         'status' => 'withdrawn',
                         'committed_hours' => 3,
                         'hours_logged' => null,
-                        'withdrawn_date' => $opportunity->start_date->copy()->subDays(2)->toDateString(),
+                        'withdrawn_date' => $opportunity
+                            ->start_date
+                            ->copy()
+                            ->subDays(2)
+                            ->toDateString(),
                         'participated_at' => null,
                     ]
                 );
@@ -351,12 +540,16 @@ class DemoDataSeeder extends Seeder
 
             if ($index === 2) {
                 \App\Models\Participation::updateOrCreate(
-                    ['opportunity_id' => $opportunity->id, 'volunteer_id' => $volunteers[20]->user_id],
+                    [
+                        'opportunity_id' => $opportunity->id,
+                        'volunteer_id' => $volunteers[20]->user_id,
+                    ],
                     [
                         'status' => 'rejected',
                         'committed_hours' => 3,
                         'hours_logged' => null,
-                        'rejection_reason' => 'The volunteer limit was reached before the request was reviewed.',
+                        'rejection_reason' =>
+                            'The volunteer limit was reached before the request was reviewed.',
                         'participated_at' => null,
                     ]
                 );
@@ -372,7 +565,10 @@ class DemoDataSeeder extends Seeder
 
             foreach ($accepted as $volunteer) {
                 \App\Models\Participation::updateOrCreate(
-                    ['opportunity_id' => $opportunity->id, 'volunteer_id' => $volunteer->user_id],
+                    [
+                        'opportunity_id' => $opportunity->id,
+                        'volunteer_id' => $volunteer->user_id,
+                    ],
                     [
                         'status' => 'accepted',
                         'committed_hours' => 4,
@@ -383,7 +579,10 @@ class DemoDataSeeder extends Seeder
             }
 
             \App\Models\Participation::updateOrCreate(
-                ['opportunity_id' => $opportunity->id, 'volunteer_id' => $volunteers[20 + $index]->user_id],
+                [
+                    'opportunity_id' => $opportunity->id,
+                    'volunteer_id' => $volunteers[20 + $index]->user_id,
+                ],
                 [
                     'status' => 'pending',
                     'committed_hours' => 3,
@@ -394,12 +593,17 @@ class DemoDataSeeder extends Seeder
 
             if ($index === 0) {
                 \App\Models\Participation::updateOrCreate(
-                    ['opportunity_id' => $opportunity->id, 'volunteer_id' => $volunteers[25]->user_id],
+                    [
+                        'opportunity_id' => $opportunity->id,
+                        'volunteer_id' => $volunteers[25]->user_id,
+                    ],
                     [
                         'status' => 'withdrawn',
                         'committed_hours' => 4,
                         'hours_logged' => null,
-                        'withdrawn_date' => now()->subDay()->toDateString(),
+                        'withdrawn_date' => now()
+                            ->subDay()
+                            ->toDateString(),
                         'participated_at' => null,
                     ]
                 );
@@ -414,7 +618,10 @@ class DemoDataSeeder extends Seeder
 
             foreach ($pendingVolunteers as $volunteer) {
                 \App\Models\Participation::updateOrCreate(
-                    ['opportunity_id' => $opportunity->id, 'volunteer_id' => $volunteer->user_id],
+                    [
+                        'opportunity_id' => $opportunity->id,
+                        'volunteer_id' => $volunteer->user_id,
+                    ],
                     [
                         'status' => 'pending',
                         'committed_hours' => 3,
@@ -427,7 +634,10 @@ class DemoDataSeeder extends Seeder
             $acceptedVolunteer = $volunteers[18 + $index];
 
             \App\Models\Participation::updateOrCreate(
-                ['opportunity_id' => $opportunity->id, 'volunteer_id' => $acceptedVolunteer->user_id],
+                [
+                    'opportunity_id' => $opportunity->id,
+                    'volunteer_id' => $acceptedVolunteer->user_id,
+                ],
                 [
                     'status' => 'accepted',
                     'committed_hours' => 3,
@@ -439,12 +649,16 @@ class DemoDataSeeder extends Seeder
             $rejectedVolunteer = $volunteers[28 + $index];
 
             \App\Models\Participation::updateOrCreate(
-                ['opportunity_id' => $opportunity->id, 'volunteer_id' => $rejectedVolunteer->user_id],
+                [
+                    'opportunity_id' => $opportunity->id,
+                    'volunteer_id' => $rejectedVolunteer->user_id,
+                ],
                 [
                     'status' => 'rejected',
                     'committed_hours' => 3,
                     'hours_logged' => null,
-                    'rejection_reason' => 'The volunteer limit was reached before the request was reviewed.',
+                    'rejection_reason' =>
+                        'The volunteer limit was reached before the request was reviewed.',
                     'participated_at' => null,
                 ]
             );

@@ -1,1 +1,0 @@
-import{t as e}from"./useQuery-BISPaT6q.js";import{F as t}from"./opportunities-Dc6GRlma.js";import{r as n}from"./index-DfKPzZQ2.js";function r(){return e({queryKey:n.skills.all,queryFn:t})}export{r as t};

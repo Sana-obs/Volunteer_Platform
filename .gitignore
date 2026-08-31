@@ -1,0 +1,27 @@
+# Frontend (Vite + React) build artifacts
+node_modules/
+dist/
+build/
+.vite/
+
+# Backend (Laravel) build artifacts
+vendor/
+storage/*.key
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+storage/logs/
+bootstrap/cache/
+
+# backend (Laravel) environment files
+.env
+.env.local
+.env.*.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE specific files
+.vscode/
+.idea/

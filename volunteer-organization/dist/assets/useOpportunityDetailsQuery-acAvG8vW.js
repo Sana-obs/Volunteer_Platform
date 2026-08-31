@@ -1,1 +1,0 @@
-import{t as e}from"./useQuery-BISPaT6q.js";import{s as t}from"./opportunities-Dc6GRlma.js";import{r as n,t as r}from"./index-DfKPzZQ2.js";function i(i){let a=r().data??[];return e({queryKey:n.opportunities.detail(i),queryFn:()=>t(i,a),enabled:!!i})}export{i as t};
