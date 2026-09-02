@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             SkillSeeder::class,
             AchievementSeeder::class,
+            DemoDataSeeder::class,
         ]);
 
         $testUser = User::factory()->create([
