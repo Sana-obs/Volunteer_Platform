@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\DB;
 
 class OpportunityController extends Controller
 {
+    private const SUGGESTED_LIMIT = 24;
+
     /**
      * GET /opportunities?search=&categoryId=&skillId=&location=&status=
      */
@@ -50,17 +52,26 @@ if ($request->filled('skillId')) {
         );
 }
 
-        if ($request->filled('status')) {
-            $status = OpportunityStatus::tryFrom((string) $request->string('status'));
-            if ($status) {
-                $query->whereOpportunityStatus($status);
-            }
+        $status = $request->filled('status')
+            ? OpportunityStatus::tryFrom((string) $request->string('status'))
+            : null;
+
+        if ($status) {
+            $query->whereOpportunityStatus($status);
         }
 
-        $opportunities = $query->latest()->paginate(15);
+        if ($status === OpportunityStatus::RegistrationOpen) {
+            $query->orderByRaw('register_end_at IS NULL')
+                ->orderBy('register_end_at')
+                ->orderBy('id');
+        } else {
+            $query->orderByDesc('id');
+        }
+
+        $perPage = min(max((int) $request->integer('per_page', 12), 1), 48);
 
         return ApiResponse::getResponse(
-            OpportunityResource::collection($opportunities),
+            OpportunityResource::collection($query->paginate($perPage)),
             Response::HTTP_OK,
         );
     }
@@ -235,9 +246,16 @@ public function suggestedForMe(Request $request)
 
         $opportunity->is_suitable = $result['label'] === 'suitable';
         $opportunity->match_label = $result['label'];
+       
+        $opportunity->match_score = ($result['scores']['suitable'] ?? 0)
+            - ($result['scores']['not_suitable'] ?? 0);
 
         return $opportunity;
-    })->sortByDesc('is_suitable')->values();
+    })
+        ->filter(fn ($opportunity) => $opportunity->is_suitable) 
+        ->sortByDesc('match_score')                             
+        ->take(self::SUGGESTED_LIMIT)                           
+        ->values();
 
     return ApiResponse::getResponse(
         OpportunityResource::collection($classified),

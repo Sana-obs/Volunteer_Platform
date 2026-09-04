@@ -296,6 +296,7 @@ export async function fetchCompletedOpportunities(governorates = []) {
     const response = await apiClient.get('/opportunities', {
       params: {
         status: OPPORTUNITY_STATUS.COMPLETED,
+        per_page: 48,
       },
     })
 
@@ -318,8 +319,11 @@ export async function fetchCompletedOpportunities(governorates = []) {
 }
 
 /**
- * Fetches opportunities, optionally filtered.
- * @param {{search?:string, categoryId?:string, skillId?:string, location?:string}} filters
+ * Fetches opportunities as a flat array (single page, capped).
+ * Used by internal helpers that filter the result client-side
+ * (similar opportunities, org-scoped lists). For the paginated browse
+ * page use `fetchOpportunitiesPage` instead.
+ * @param {{search?:string, categoryId?:string, skillId?:string, location?:string, status?:string}} filters
  */
 export async function fetchOpportunities(filters = {}, governorates = []) {
   if (MOCK_MODE) {
@@ -336,7 +340,7 @@ export async function fetchOpportunities(filters = {}, governorates = []) {
 
   try {
     const params = Object.fromEntries(
-      Object.entries(filters).filter(
+      Object.entries({ ...filters, per_page: 48 }).filter(
         ([, value]) => value !== '' && value != null,
       ),
     )
@@ -357,6 +361,64 @@ export async function fetchOpportunities(filters = {}, governorates = []) {
       getApiErrorMessage(error, 'Failed to load opportunities'),
       { cause: error },
     )
+  }
+}
+
+/**
+ * Fetches one page of opportunities for the infinite-scroll browse list.
+ * Filtering, sorting and pagination all happen server-side.
+ * @param {{page?:number, perPage?:number, search?:string, categoryId?:string, skillId?:string, location?:string, status?:string}} params
+ * @returns {Promise<{items:Array, nextPage:number|undefined, total:number}>}
+ */
+export async function fetchOpportunitiesPage(
+  { page = 1, perPage = 12, ...filters } = {},
+  governorates = [],
+) {
+  if (MOCK_MODE) {
+    await wait()
+
+    const all = MOCK_OPPORTUNITIES
+      .filter((opportunity) => matchesFilters(opportunity, filters))
+      .map(attachComputedStatus)
+      .filter((opportunity) => !filters.status || opportunity.status === filters.status)
+      .sort((a, b) => new Date(a.registerEndAt) - new Date(b.registerEndAt))
+
+    const start = (page - 1) * perPage
+    const items = all.slice(start, start + perPage)
+
+    return {
+      items,
+      nextPage: start + perPage < all.length ? page + 1 : undefined,
+      total: all.length,
+    }
+  }
+
+  try {
+    const params = Object.fromEntries(
+      Object.entries({ ...filters, page, per_page: perPage }).filter(
+        ([, value]) => value !== '' && value != null,
+      ),
+    )
+
+    const response = await apiClient.get('/opportunities', { params })
+
+    const items = (Array.isArray(response.data) ? response.data : []).map((raw) =>
+      mapApiOpportunity(raw, governorates),
+    )
+
+    // client.js unwraps the Laravel envelope onto response.meta
+    const meta = response.meta
+
+    return {
+      items,
+      nextPage:
+        meta && meta.currentPage < meta.lastPage ? meta.currentPage + 1 : undefined,
+      total: meta?.total ?? items.length,
+    }
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error, 'Failed to load opportunities'), {
+      cause: error,
+    })
   }
 }
 
@@ -862,7 +924,7 @@ export async function setOpportunityStatus(
   id,
   status,
   governorates = [],
-) {
+) { 
   if (MOCK_MODE) {
     await wait()
 

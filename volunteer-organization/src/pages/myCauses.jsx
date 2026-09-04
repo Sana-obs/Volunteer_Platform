@@ -54,7 +54,7 @@ export default function MyCauses() {
 
   const { toast, showSuccess, showError, closeToast } = useToast();
 
-  const [search, setSearch] = useState("");
+  const [search,  setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("");
 

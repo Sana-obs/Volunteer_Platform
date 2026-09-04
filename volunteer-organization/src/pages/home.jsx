@@ -61,7 +61,7 @@ export default function Home() {
           <HomeSuccessStories 
             opportunities={completedOpportunities} 
             loading={opportunitiesLoading} 
-            className="pt-2 sm:pt-4" 
+            className="pt-8 sm:pt-14 lg:pt-20"  
           /> 
  
           {!opportunitiesLoading && completedOpportunities.length > 0 ? ( 

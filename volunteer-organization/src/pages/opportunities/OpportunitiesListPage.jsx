@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Target, SearchX, Loader2, Search } from "lucide-react";
 import Typography from "../../components/ui/Typography";
@@ -121,56 +121,43 @@ export default function OpportunitiesListPage() {
     [governorates],
   );
 
+  // Default browse view = open opportunities. A status in the URL explicitly
+  // requests another (e.g. completed). Sent to the API — filtering, sorting and
+  // pagination all happen server-side.
+  const effectiveStatus = isSuggestedTab
+    ? ""
+    : selectedStatus || OPPORTUNITY_STATUS.REGISTRATION_OPEN;
+
   const opportunitiesQuery = useOpportunitiesQuery({
     isSuggestedTab,
     search: debouncedSearch,
     categoryId: selectedCategoryId || "",
     skillId: selectedSkillId || "",
     location: governorateIdToLocation(selectedGovernorateId),
-    status: selectedStatus || "",
+    status: effectiveStatus,
     user,
   });
 
-  const opportunities = opportunitiesQuery.data;
+  const opportunities = opportunitiesQuery.opportunities;
 
-  // Show open opportunities by default.
-  // A status in the URL explicitly requests another status, such as completed opportunities.
   const visibleOpportunities = useMemo(() => {
     if (!Array.isArray(opportunities)) return [];
 
-    const scoped = selectedStatus
-      ? opportunities.filter((opportunity) => opportunity.status === selectedStatus)
-      : opportunities.filter(
-          (opportunity) =>
-            opportunity.status === OPPORTUNITY_STATUS.REGISTRATION_OPEN,
-        );
+    // "All" tab: already filtered + sorted + paginated by the server.
+    if (!isSuggestedTab) return opportunities;
 
-    // Suggested opportunities keep their recommendation order and are filtered locally.
-    if (isSuggestedTab) {
-      return scoped.filter((opportunity) =>
-        matchesFilters(opportunity, {
-          search: debouncedSearch,
-          categoryId: suggestedCategoryId || "",
-          skillId: suggestedSkillId || "",
-          location: governorateIdToLocation(suggestedGovernorateId),
-        }),
-      );
-    }
-
-    // Open opportunities are sorted by registration deadline.
-    // Past opportunities are sorted by most recent end date.
-    const isPastStatus =
-      selectedStatus === OPPORTUNITY_STATUS.COMPLETED ||
-      selectedStatus === OPPORTUNITY_STATUS.IN_PROGRESS;
-
-    return [...scoped].sort((a, b) =>
-      isPastStatus
-        ? new Date(b.endDate) - new Date(a.endDate)
-        : new Date(a.registerEndAt) - new Date(b.registerEndAt),
+    // Suggested: keep recommendation order, filter locally against the
+    // suggested-tab filter controls.
+    return opportunities.filter((opportunity) =>
+      matchesFilters(opportunity, {
+        search: debouncedSearch,
+        categoryId: suggestedCategoryId || "",
+        skillId: suggestedSkillId || "",
+        location: governorateIdToLocation(suggestedGovernorateId),
+      }),
     );
   }, [
     opportunities,
-    selectedStatus,
     isSuggestedTab,
     debouncedSearch,
     suggestedCategoryId,
@@ -181,15 +168,36 @@ export default function OpportunitiesListPage() {
 
   const isInitialLoading = opportunitiesQuery.isPending;
   const isRefetching = opportunitiesQuery.isFetching && !isInitialLoading;
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = opportunitiesQuery;
 
   const error = opportunitiesQuery.isError
     ? opportunitiesQuery.error?.message || "Failed to load opportunities"
     : "";
 
   const resultsLabel = useMemo(() => {
-    const count = visibleOpportunities.length;
+    const count = isSuggestedTab
+      ? visibleOpportunities.length
+      : opportunitiesQuery.total;
     return `${count} opportunit${count === 1 ? "y" : "ies"} found`;
-  }, [visibleOpportunities.length]);
+  }, [isSuggestedTab, visibleOpportunities.length, opportunitiesQuery.total]);
+
+  // Infinite scroll: load the next page when the sentinel nears the viewport.
+  const loadMoreRef = useRef(null);
+
+  useEffect(() => {
+    const node = loadMoreRef.current;
+    if (!node || isSuggestedTab || !hasNextPage) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isFetchingNextPage) fetchNextPage();
+      },
+      { rootMargin: "600px" },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isSuggestedTab, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   // Active filter chips use URL state on All and local state on Suggested.
   const activeCategoryId = isSuggestedTab ? suggestedCategoryId : selectedCategoryId;
@@ -490,6 +498,19 @@ export default function OpportunitiesListPage() {
             ))}
           </div>
         )}
+
+        {/* Infinite-scroll sentinel — only on the All tab, only while more pages remain. */}
+        {!isSuggestedTab && !isInitialLoading && hasNextPage ? (
+          <div
+            ref={loadMoreRef}
+            className="flex items-center justify-center py-8"
+            aria-hidden="true"
+          >
+            {isFetchingNextPage ? (
+              <Loader2 size={22} className="animate-spin text-heading/30" />
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       <FilterFab

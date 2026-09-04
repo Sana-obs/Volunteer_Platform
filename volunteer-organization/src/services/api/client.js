@@ -2,7 +2,11 @@ import axios from 'axios'
 import { AUTH_STORAGE_KEY, SESSION_EXPIRED_STORAGE_KEY } from '../../constants/auth/storage'
 import { ROUTES } from '../../constants/paths'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
+if (!API_BASE_URL && import.meta.env.PROD) {
+  console.error('VITE_API_BASE_URL غير معرَّف — اضبطيه بإعدادات Vercel.')
+}
 
 // بدون هاد، طلب معلَّق (سيرفر لا يرد، لا خطأ صريح) كان ينتظر بلا أي حدّ
 // زمني فعلي — بيضل "جاري التحميل" للأبد بدل ما يفشل بوقت معقول ويعرض
@@ -52,7 +56,7 @@ apiClient.interceptors.response.use(
       const hadSession = Boolean(localStorage.getItem(AUTH_STORAGE_KEY))
       localStorage.removeItem(AUTH_STORAGE_KEY)
 
-      // تجنّب حلقة تحويل لا نهائية لو الـ 401 صار أصلًا من صفحة تسجيل الدخول نفسها
+      // Avoid an infinite conversion loop if the 401 is originally from the same login page
       if (hadSession && window.location.pathname !== ROUTES.LOGIN) {
 
         try {

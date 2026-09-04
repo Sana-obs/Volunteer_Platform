@@ -18,6 +18,9 @@ class CategoryResource extends JsonResource
             'id'=>$this->id,
             'name'=>$this->name,
             'description'=>$this->description,
+            // يظهر فقط عند تحميل العدّ عبر withCount('opportunities') —
+            // الفرونت (CategoryRow / OpportunityFilterBar) يقرأه كـ opportunitiesCount
+            'opportunitiesCount'=>$this->whenCounted('opportunities'),
         ];
     }
 }

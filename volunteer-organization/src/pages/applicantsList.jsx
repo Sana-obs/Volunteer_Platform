@@ -31,6 +31,10 @@ export default function ApplicantsList() {
     isVerified,
     hasLoadError,
   } = useOrganizationVerification();
+  
+
+
+
 
   const opportunityQuery = useOpportunityDetailsQuery(id);
   const applicantsQuery = useApplicantsQuery(id);

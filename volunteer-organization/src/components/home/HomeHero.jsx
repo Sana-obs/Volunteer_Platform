@@ -196,7 +196,7 @@ export default function HomeHero({ volunteersCount, organizationsCount, loading 
                   className="flex items-center gap-2"
                 >
                   <PlusCircle size={18} /> Post a New Opportunity
-                </Button>
+                </Button> 
               ) : accountType === ACCOUNT_TYPES.ADMIN ? (
                 <Button
                   variant="outlineLight"

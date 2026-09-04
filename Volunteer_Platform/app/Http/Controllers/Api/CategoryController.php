@@ -16,7 +16,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::latest()->get();
+        $categories = Category::withCount('opportunities')->latest()->get();
 
         return ApiResponse::getResponse(
             CategoryResource::collection($categories),

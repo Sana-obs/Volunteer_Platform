@@ -15,6 +15,10 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             SkillSeeder::class,
             AchievementSeeder::class,
+            // بيعتمد على الأربعة اللي فوقه (محافظات/تصنيفات/مهارات/أدوار).
+            // حجمه صغير افتراضيًا وقابل للتحكم عبر DEMO_SEED_SIZE بـ.env
+            // (راجعي التعليق بأعلى DemoDataSeeder).
+            DemoDataSeeder::class,
         ]);
 
         $testUser = User::factory()->create([
