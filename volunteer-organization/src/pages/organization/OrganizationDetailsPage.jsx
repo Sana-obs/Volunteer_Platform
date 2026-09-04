@@ -29,6 +29,7 @@ import { useShowMore } from "../../hooks/useShowMore";
 import { useAuth } from "../../hooks/useAuth";
 import { ROUTES } from "../../constants/paths";
 import { getOrganizationId } from "../../utils/auth/getOrganizationId";
+import { isLightLogoOrganization } from "../../constants/organizationLogoOverrides";
 
 // Keeps open and past opportunities in separate tabs.
 const ORG_OPPORTUNITIES_TABS = {
@@ -147,7 +148,11 @@ export default function OrganizationDetailsPage() {
         <span className="text-heading">{organization.name}</span>
       </nav>
 
-      <div className="w-full md:w-1/2 aspect-video rounded-3xl overflow-hidden bg-primary/10 flex items-center justify-center mb-6">
+      <div
+        className={`w-full md:w-1/2 aspect-video rounded-3xl overflow-hidden flex items-center justify-center mb-6 ${
+          isLightLogoOrganization(organization.name) ? "bg-heading" : "bg-field"
+        }`}
+      >
         <ClickableAvatar
           src={
             organization.profileImageUrl && !logoFailed
@@ -158,21 +163,12 @@ export default function OrganizationDetailsPage() {
           className="h-full w-full"
         >
           {organization.profileImageUrl && !logoFailed ? (
-            <div className="relative w-full h-full">
-              <img
-                src={organization.profileImageUrl}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-30"
-              />
-
-              <img
-                src={organization.profileImageUrl}
-                alt={organization.name}
-                onError={() => setLogoFailed(true)}
-                className="relative w-full h-full object-contain p-6"
-              />
-            </div>
+            <img
+              src={organization.profileImageUrl}
+              alt={organization.name}
+              onError={() => setLogoFailed(true)}
+              className="w-full h-full object-contain p-6"
+            />
           ) : (
             <Building2
               size={56}

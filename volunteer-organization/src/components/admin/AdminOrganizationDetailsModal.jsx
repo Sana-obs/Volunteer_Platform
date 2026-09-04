@@ -8,6 +8,7 @@ import Modal from '../ui/Modal'
 import Button from '../ui/Button'
 import Typography from '../ui/Typography'
 import { ORGANIZATION_STATUS } from '../../constants/organizationStatus'
+import { isLightLogoOrganization } from '../../constants/organizationLogoOverrides'
 import { formatDateTime } from '../../utils/formatDateTime'
 
 function getStatusTone(status) {
@@ -73,12 +74,20 @@ export default function AdminOrganizationDetailsModal({
       {organization && (
         <div className="space-y-6">
           <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/10 text-secondary">
+            <div
+              className={`flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl text-secondary ${
+                organization.imageUrl
+                  ? isLightLogoOrganization(organization.name)
+                    ? "bg-heading"
+                    : "bg-field"
+                  : "bg-secondary/10"
+              }`}
+            >
               {organization.imageUrl ? (
                 <img
                   src={organization.imageUrl}
                   alt={organization.name || 'Organization logo'}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain p-1.5"
                 />
               ) : (
                 <Building2 size={24} aria-hidden="true" />

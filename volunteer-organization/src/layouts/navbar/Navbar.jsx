@@ -24,6 +24,7 @@ import NotificationBell from "../../components/ui/NotificationBell";
 import { useAuth } from "../../hooks/useAuth";
 import useRecentUpdates from "../../hooks/useRecentUpdates";
 import { getOrganizationId } from "../../utils/auth/getOrganizationId";
+import { isLightLogoOrganization } from "../../constants/organizationLogoOverrides";
 
 export default function Navbar({ role = "guest" }) {
   const navigate = useNavigate();
@@ -33,6 +34,15 @@ export default function Navbar({ role = "guest" }) {
   // راجع registerUser بـ services/auth.js). زر الـ Dashboard لازم
   // يعتمد على وجوده فعليًا، مش بس على نوع الحساب
   const organizationId = getOrganizationId(user);
+  // شعار المنظمة لازم يظهر كاملًا (object-contain) بخلفية محايدة، بعكس
+  // صورة المتطوع الشخصية اللي بتُقص لتملأ الدائرة (object-cover) — نفس
+  // الصورة (avatarUrl) بس معاملة عرض مختلفة حسب نوع الحساب
+  const isOrganizationAccount = accountType === ACCOUNT_TYPES.ORGANIZATION;
+  // استثناء اسم منظمة واحدة (شعارها فاتح جدًا) — خلفية غامقة بدل الفاتحة
+  // العادية حتى يتباين الشعار، بلا أي تأثير على باقي المنظمات
+  const orgLogoBgClass = isLightLogoOrganization(user?.orgName)
+    ? "bg-heading"
+    : "bg-field";
 
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -186,11 +196,21 @@ export default function Navbar({ role = "guest" }) {
 
                     <div className="flex min-w-0 items-center gap-3">
                       {user?.avatarUrl ? (
-                        <img
-                          src={user.avatarUrl}
-                          alt=""
-                          className="h-9 w-9 shrink-0 rounded-full object-cover border-2 border-primary/70"
-                        />
+                        isOrganizationAccount ? (
+                          <div className={`h-9 w-9 shrink-0 rounded-full border-2 border-primary/70 overflow-hidden flex items-center justify-center ${orgLogoBgClass}`}>
+                            <img
+                              src={user.avatarUrl}
+                              alt=""
+                              className="h-full w-full object-contain"
+                            />
+                          </div>
+                        ) : (
+                          <img
+                            src={user.avatarUrl}
+                            alt=""
+                            className="h-9 w-9 shrink-0 rounded-full object-cover border-2 border-primary/70"
+                          />
+                        )
                       ) : (
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 border border-primary/30">
                           <UserIcon className="h-4.5 w-4.5 text-primary" />
@@ -210,11 +230,21 @@ export default function Navbar({ role = "guest" }) {
                                     text-white hover:bg-white/15 hover:border-white/25
                                     transition">
                       {user?.avatarUrl ? (
-                        <img
-                          src={user.avatarUrl}
-                          alt={user.displayName}
-                          className="h-7 w-7 shrink-0 rounded-full object-cover border-2 border-primary/70"
-                        />
+                        isOrganizationAccount ? (
+                          <div className={`h-7 w-7 shrink-0 rounded-full border-2 border-primary/70 overflow-hidden flex items-center justify-center ${orgLogoBgClass}`}>
+                            <img
+                              src={user.avatarUrl}
+                              alt={user.displayName}
+                              className="h-full w-full object-contain"
+                            />
+                          </div>
+                        ) : (
+                          <img
+                            src={user.avatarUrl}
+                            alt={user.displayName}
+                            className="h-7 w-7 shrink-0 rounded-full object-cover border-2 border-primary/70"
+                          />
+                        )
                       ) : (
                         <div className="h-7 w-7 shrink-0 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center">
                           <UserIcon className="h-4 w-4 text-primary" />

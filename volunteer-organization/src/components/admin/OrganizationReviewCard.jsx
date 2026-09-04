@@ -5,6 +5,7 @@ import Button from '../ui/Button'
 import Typography from '../ui/Typography'
 import { ADMIN_CARD_BASE, ADMIN_GHOST_BUTTON } from '../../utils/adminStyles'
 import { ORGANIZATION_STATUS } from '../../constants/organizationStatus'
+import { isLightLogoOrganization } from '../../constants/organizationLogoOverrides'
 import { formatDateTime } from '../../utils/formatDateTime'
 
 function getStatusTone(status) {
@@ -39,12 +40,20 @@ export default function OrganizationReviewCard({
     <article className={`${ADMIN_CARD_BASE} p-5 md:p-6`}>
       <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex min-w-0 gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-adminAccent/15 text-adminAccentSoft">
+          <div
+            className={`flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl text-adminAccentSoft ${
+              organization.imageUrl
+                ? isLightLogoOrganization(organization.name)
+                  ? "bg-heading"
+                  : "bg-field"
+                : "bg-adminAccent/15"
+            }`}
+          >
             {organization.imageUrl ? (
               <img
                 src={organization.imageUrl}
                 alt={organization.name || 'Organization logo'}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain p-1.5"
               />
             ) : (
               <Building2 size={24} aria-hidden="true" />

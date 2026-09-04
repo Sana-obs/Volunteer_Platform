@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Card from "../ui/Card";
 import Button from "../ui/Button";
 import { ROUTES } from "../../constants/paths";
+import { isLightLogoOrganization } from "../../constants/organizationLogoOverrides";
 
 export default function OrganizationCard({ organization }) {
   const navigate = useNavigate();
@@ -24,18 +25,16 @@ export default function OrganizationCard({ organization }) {
   );
 
   const logoMedia = (
-    <div className="relative w-full aspect-video bg-primary/10">
-      <img
-        src={organization.profileImageUrl}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-30"
-      />
+    <div
+      className={`w-full aspect-video flex items-center justify-center ${
+        isLightLogoOrganization(organization.name) ? "bg-heading" : "bg-field"
+      }`}
+    >
       <img
         src={organization.profileImageUrl}
         alt={organization.name}
         onError={() => setLogoFailed(true)}
-        className="relative w-full h-full object-contain p-4"
+        className="w-full h-full object-contain p-4"
       />
     </div>
   );

@@ -1,10 +1,7 @@
 import { Building2 } from "lucide-react";
 import HomeSectionHeader from "./HomeSectionHeader";
 import { ROUTES } from "../../constants/paths";
-import {
-  CARD_SURFACE,
-  CARD_ELEVATION,
-} from "../../utils/surfaceStyles";
+import { CARD_SURFACE } from "../../utils/surfaceStyles";
 
 const PARTNERS_DISPLAY_LIMIT = 8;
 
@@ -58,28 +55,27 @@ export default function HomePartners({ opportunities }) {
             key={organization.id}
             className={`
               ${CARD_SURFACE}
-              ${CARD_ELEVATION}
-              flex flex-col items-center gap-3
+              flex h-full flex-col items-center gap-3
               p-4 text-center sm:p-5
               transition-transform duration-200
-              hover:-translate-y-0.5
+              hover:-translate-y-0.5 hover:border-primary/20
             `}
           >
-            {organization.imageUrl ? (
-              <img
-                src={organization.imageUrl}
-                alt={organization.name}
-                className="h-14 w-14 rounded-full object-cover"
-              />
-            ) : (
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-heading/10">
+              {organization.imageUrl ? (
+                <img
+                  src={organization.imageUrl}
+                  alt={organization.name}
+                  className="h-full w-full object-contain p-2"
+                />
+              ) : (
                 <Building2
                   size={24}
                   className="text-primary"
                   aria-hidden="true"
                 />
-              </div>
-            )}
+              )}
+            </div>
 
             <span className="line-clamp-2 text-sm font-semibold leading-snug text-heading wrap-break-word">
               {organization.name}

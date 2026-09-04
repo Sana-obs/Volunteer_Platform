@@ -26,7 +26,7 @@ export default function Home() {
   const statsError = statsQuery.isError; 
  
   return ( 
-    <div className="bg-canvas text-heading"> 
+    <div className="overflow-x-hidden bg-canvas text-heading">
       <HomeHero 
         volunteersCount={stats?.volunteersCount} 
         organizationsCount={stats?.organizationsCount} 
@@ -34,43 +34,43 @@ export default function Home() {
       /> 
  
       <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24"> 
-        <div className="space-y-20 sm:space-y-24 lg:space-y-28"> 
-          {statsError ? ( 
-            <section className="flex flex-col items-start gap-3"> 
-              <div className="w-full max-w-xl"> 
-                <AuthAlert variant="error"> 
-                  Failed to load platform statistics. 
-                </AuthAlert> 
-              </div> 
- 
-              <Button 
-                variant="primary" 
-                size="small" 
-                onClick={() => statsQuery.refetch()} 
-              > 
-                Retry 
-              </Button> 
-            </section> 
-          ) : ( 
-            <HomeStatsSection 
-              stats={stats} 
-              loading={statsLoading} 
-            /> 
-          )} 
- 
-          <HomeSuccessStories 
-            opportunities={completedOpportunities} 
-            loading={opportunitiesLoading} 
-            className="pt-8 sm:pt-14 lg:pt-20"  
-          /> 
- 
-          {!opportunitiesLoading && completedOpportunities.length > 0 ? ( 
-            <HomePartners 
-              opportunities={completedOpportunities} 
-            /> 
-          ) : null} 
- 
-          <HomeHowToJoin /> 
+        <div className="space-y-20 sm:space-y-24 lg:space-y-28">
+          <HomeSuccessStories
+            opportunities={completedOpportunities}
+            loading={opportunitiesLoading}
+            className="pt-8 sm:pt-14 lg:pt-20"
+          />
+
+          {!opportunitiesLoading && completedOpportunities.length > 0 ? (
+            <HomePartners
+              opportunities={completedOpportunities}
+            />
+          ) : null}
+
+          {statsError ? (
+            <section className="flex flex-col items-start gap-3">
+              <div className="w-full max-w-xl">
+                <AuthAlert variant="error">
+                  Failed to load platform statistics.
+                </AuthAlert>
+              </div>
+
+              <Button
+                variant="primary"
+                size="small"
+                onClick={() => statsQuery.refetch()}
+              >
+                Retry
+              </Button>
+            </section>
+          ) : (
+            <HomeStatsSection
+              stats={stats}
+              loading={statsLoading}
+            />
+          )}
+
+          <HomeHowToJoin />
  
           <HomeFaqSection /> 
         </div> 
