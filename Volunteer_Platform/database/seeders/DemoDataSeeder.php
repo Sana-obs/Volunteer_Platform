@@ -1,4 +1,3 @@
-```php
 <?php
 
 namespace Database\Seeders;
@@ -1671,4 +1670,3 @@ class DemoDataSeeder extends Seeder
         }
     }
 }
-```
