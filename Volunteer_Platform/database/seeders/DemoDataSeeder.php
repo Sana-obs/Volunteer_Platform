@@ -943,17 +943,15 @@ class DemoDataSeeder extends Seeder
                     $governorateId =
                         $firstGovernorateId;
 
-                    $teachingSkillId =
-                        Skill::where(
-                            'name',
-                            'Teaching'
-                        )->value('id');
+                    $teachingSkillId = Skill::where(
+                        'name',
+                        'Teaching'
+                    )->value('id');
 
-                    $firstAidSkillId =
-                        Skill::where(
-                            'name',
-                            'First Aid'
-                        )->value('id');
+                    $firstAidSkillId = Skill::where(
+                        'name',
+                        'First Aid'
+                    )->value('id');
 
                     $opportunitySkills =
                         array_values(
@@ -1380,6 +1378,7 @@ class DemoDataSeeder extends Seeder
                             ),
 
                         'hours_logged' => null,
+
                         'participated_at' =>
                             now()->subHours(1),
                     ]
@@ -1392,6 +1391,11 @@ class DemoDataSeeder extends Seeder
                     ->random(1)
                     ->first();
 
+            /*
+             * participated_at cannot be NULL in the production database.
+             * For pending demo records we therefore use the opportunity
+             * registration start as a placeholder participation timestamp.
+             */
             Participation::updateOrCreate(
                 [
                     'opportunity_id' =>
@@ -1411,7 +1415,9 @@ class DemoDataSeeder extends Seeder
                         ),
 
                     'hours_logged' => null,
-                    'participated_at' => null,
+
+                    'participated_at' =>
+                        $opportunity->register_start_at,
                 ]
             );
         }
@@ -1470,7 +1476,9 @@ class DemoDataSeeder extends Seeder
                             ),
 
                         'hours_logged' => null,
-                        'participated_at' => null,
+
+                        'participated_at' =>
+                            $opportunity->register_start_at,
                     ]
                 );
             }
@@ -1495,7 +1503,9 @@ class DemoDataSeeder extends Seeder
                             ),
 
                         'hours_logged' => null,
-                        'participated_at' => null,
+
+                        'participated_at' =>
+                            $opportunity->register_start_at,
                     ]
                 );
             }
@@ -1524,7 +1534,8 @@ class DemoDataSeeder extends Seeder
                         'rejection_reason' =>
                             'The volunteer limit was reached before the request was reviewed.',
 
-                        'participated_at' => null,
+                        'participated_at' =>
+                            $opportunity->register_start_at,
                     ]
                 );
             }
@@ -1554,6 +1565,32 @@ class DemoDataSeeder extends Seeder
             return;
         }
 
+        $base =
+            $reference ??
+            $opportunity->start_date;
+
+        /*
+         * participated_at is NOT NULL in the production database.
+         * Every fixed scenario therefore receives a valid timestamp.
+         */
+        $participatedAt = $base->copy();
+
+        if ($status === 'withdrawn') {
+            $withdrawnDate =
+                $base
+                    ->copy()
+                    ->subDays(2);
+
+            $participatedAt = $withdrawnDate->copy()->subDay();
+        }
+
+        if ($status === 'rejected') {
+            $participatedAt =
+                $opportunity->register_start_at
+                    ? Carbon::parse($opportunity->register_start_at)
+                    : $base->copy();
+        }
+
         $data = [
             'status' => $status,
 
@@ -1564,15 +1601,20 @@ class DemoDataSeeder extends Seeder
                     0
                 ),
 
-            'hours_logged' => null,
-            'participated_at' => null,
+            'hours_logged' =>
+                $status === 'withdrawn'
+                    ? 0
+                    : null,
+
+            'participated_at' =>
+                $participatedAt,
+
+            'withdrawn_date' => null,
+
+            'rejection_reason' => null,
         ];
 
         if ($status === 'withdrawn') {
-            $base =
-                $reference ??
-                $opportunity->start_date;
-
             $data['withdrawn_date'] =
                 $base
                     ->copy()
