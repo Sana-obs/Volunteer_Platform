@@ -21,13 +21,15 @@ class DatabaseSeeder extends Seeder
             DemoDataSeeder::class,
         ]);
 
-        $testUser = User::factory()->create([
-            'first_name' => 'Test',
-            'last_name'  => 'Admin',
-            'email'      => 'admin@volunteer.test',
-            'password'=>'Admin@123'
-        ]);
+        $testUser = User::updateOrCreate(
+    ['email' => 'admin@volunteer.test'],
+    [
+        'first_name' => 'Test',
+        'last_name' => 'Admin',
+        'password' => 'Admin@123',
+    ]
+);
 
-        $testUser->assignRole('platform-admin');
+$testUser->assignRole('platform-admin');
     }
 }
